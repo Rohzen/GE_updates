@@ -1,0 +1,87 @@
+# -*- coding: utf-8 -*-
+# Part of Odoo. See LICENSE file for full copyright and licensing details.
+
+from odoo import api, models, fields, _
+from odoo.addons import decimal_precision as dp
+from odoo.exceptions import UserError
+import os
+
+class SaleOrder(models.Model):
+
+    _inherit = 'sale.order'
+
+    weight = fields.Float('Gross weight', digits=dp.get_precision('Stock Weight'),
+        help="Weight of the product, packaging not included. The unit of measure can be changed in the general settings")
+    gross_weight = fields.Float('Gross weight', digits=dp.get_precision('Stock Weight'),
+        help="Weight of the product, packaging not included. The unit of measure can be changed in the general settings")
+    volume = fields.Float('Pack Volume', help="The volume in m3.", digits=dp.get_precision('Stock Volume'))
+
+class AccountInvoice(models.Model):
+
+    _inherit = 'account.invoice'
+
+    weight = fields.Float('Gross weight', digits=dp.get_precision('Stock Weight'),
+        help="Weight of the product, packaging not included. The unit of measure can be changed in the general settings")
+    gross_weight = fields.Float('Gross weight', digits=dp.get_precision('Stock Weight'),
+        help="Weight of the product, packaging not included. The unit of measure can be changed in the general settings")
+    volume = fields.Float('Pack Volume', help="The volume in m3.", digits=dp.get_precision('Stock Volume'))
+
+class ddtCustom(models.Model):
+    _inherit = 'stock.picking.package.preparation'
+
+    order_line_ids = fields.Many2many('sale.order.line',  compute='_compute_order_lines',  string='Order Lines')
+    pairs_total = fields.Char('Pairs (Sz.)', compute='_compute_pairs_total') #Aggiungere compute
+    packs_total = fields.Integer('Pairs', compute='_compute_packs_total') #Aggiungere compute
+
+    weight = fields.Float('Gross weight', digits=dp.get_precision('Stock Weight'),
+        help="Weight of the product, packaging not included. The unit of measure can be changed in the general settings")
+    gross_weight = fields.Float('Gross weight', digits=dp.get_precision('Stock Weight'),
+        help="Weight of the product, packaging not included. The unit of measure can be changed in the general settings")
+    volume = fields.Float('Pack Volume', help="The volume in m3.", digits=dp.get_precision('Stock Volume'))
+
+    @api.one
+    def _compute_order_lines(self):
+        # weight_total = 0
+        # volume_total = 0.0
+        #out_file = open("c:\\temp\dev.txt","w")
+        #self.ensure_one()
+        for ddt in self:
+            order = ddt._get_sale_order_ref()
+        if order:
+            order_lines = set()
+            res_ids = self.env['sale.order.line'].search([['order_id',  '=', order.id]])
+            for o in res_ids: 
+                order_lines.add(o.id)
+
+                # if o.product_id.is_kit:
+                    # bom_id = self.env['mrp.bom'].search([('product_tmpl_id',  '=', o.product_id.product_tmpl_id.id)])
+                    # if bom_id:
+                        # bom_ids = self.env['mrp.bom.line'].search([('bom_id',  '=',  bom_id[0].id)])
+                        # if bom_ids:
+                            # for bom_line in bom_ids:
+                                # self.weight += bom_line.product_id.weight
+                                # self.volume += bom_line.product_id.volume
+                # else:
+                    # self.weight += o.product_id.weight
+                    # self.volume += o.product_id.volume
+
+            self.order_line_ids = list(order_lines)
+
+        # self.weight = weight_total
+        # self.volume = volume_total
+
+    @api.one
+    def _compute_pairs_total(self):
+        for ddt in self:
+            order = ddt._get_sale_order_ref()
+            
+            self.pairs_total = order.pairs_total
+
+
+
+    @api.one
+    def _compute_packs_total(self):
+        for ddt in self:
+            order = ddt._get_sale_order_ref()
+            
+            self.packs_total = order.packs_total

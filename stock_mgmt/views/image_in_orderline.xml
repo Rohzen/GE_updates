@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data>
+
+
+    <record model="ir.ui.view" id="image_2_sol_view">
+        <field name="name">image.sol.view</field>
+
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+          <xpath expr="//tree/field[@name='product_id']" position="before">
+                <field name="image" widget="image" style="width:48px;height:48px" />
+            </xpath>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="image_3_sol_view">
+        <field name="name">image.sol3.view</field>
+
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form"/>
+        <field name="arch" type="xml">
+          <xpath expr="//tree/field[@name='product_id']" position="before">
+                <field name="image" widget="image" style="width:48px;height:48px" />
+            </xpath>
+        </field>
+    </record>
+
+  </data>
+</openerp>

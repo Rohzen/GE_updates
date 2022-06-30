@@ -1,0 +1,505 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <odoo>
+        <record id="paperformat_sale" model="report.paperformat">
+            <field name="name">Purchase order</field>
+            <field name="default" eval="True" />
+            <field name="format">A4</field>
+            <field name="page_height">0</field>
+            <field name="page_width">0</field>
+            <field name="orientation">Landscape</field>
+            <field name="margin_top">18</field>
+            <field name="margin_bottom">20</field>
+            <field name="margin_left">5</field>
+            <field name="margin_right">5</field>
+            <field name="header_line" eval="True" />
+            <field name="header_spacing">15</field>
+            <field name="dpi">80</field>
+        </record>
+
+    <template id="saleorder_report_external_layout">
+            <t t-if="not o" t-set="o" t-value="doc"/>
+            <t t-if="not company">
+            <!-- Multicompany -->
+                <t t-if="company_id">
+                    <t t-set="company" t-value="company_id"/>
+                </t>
+                <t t-elif="o and 'company_id' in o">
+                    <t t-set="company" t-value="o.company_id.sudo()"/>
+                </t>
+                <t t-else="else">
+                    <t t-set="company" t-value="res_company"/>
+                </t>
+                <t t-set="sale_order" t-value="sale_order.id"/>
+            </t>
+
+<!--        <t t-if="company.external_report_layout_id" t-call="{{company.external_report_layout_id.key}}"><t t-raw="0"/></t>-->
+            <t t-call="stock_mgmt.saleorder_external_layout_standard"><t t-raw="0"/></t>
+        </template>
+
+    <template id="saleorder_external_layout_standard">
+        <div class="header">
+            <div class="row">
+                <div class="col-3 mb4">
+                    <img t-if="company.logo" t-att-src="image_data_uri(company.logo)" style="max-height: 45px;" alt="Logo"/>
+                </div>
+                <div class="col-9 text-right" t-field="company.report_header" name="moto">
+
+                </div>
+            </div>
+            <div t-if="company.logo or company.report_header" class="row zero_min_height">
+                <div class="col-12">
+                    <div style="border-bottom: 1px solid black;"/>
+                </div>
+            </div>
+
+        </div>
+        <div class="article o_report_layout_standard"  t-att-data-oe-model="o and o._name" t-att-data-oe-id="o and o.id" t-att-data-oe-lang="o and o.env.context.get('lang')">
+            <t t-call="web.address_layout"/>
+            <t t-raw="0"/>
+        </div>
+
+        <!--<div class="header">
+                        <div class="row" style='border:1px solid #808B96;border-collapse:collapse;' colspan='12'>ORDER CONFIRMATION - Page <span class="page"/> of <span class="topage"/></div>
+                        <div class="row" style='border:1px solid #808B96;border-collapse:collapse;' colspan='2'>VS ORDINE DEL</div>
+                        <div class="row" style='border:1px solid #808B96;border-collapse:collapse;' colspan='2'><span t-field="doc.confirmation_date"/></div>
+                        <div nowrap='' style='border:1px solid #808B96;border-collapse:collapse;'>09-SET-19</div>
+                        <div nowrap='' style='border:1px solid #808B96;border-collapse:collapse;'>NO.CONFIRMATION</div>
+                        <div style='border:1px solid #808B96;border-collapse:collapse;'><span t-field='doc.name'></span></div>
+                        <div style='border:1px solid #808B96;border-collapse:collapse;'>ORDER CONFIRMATION DATE</div>
+                        <div style='border:1px solid #808B96;border-collapse:collapse;'>
+                            <span t-if="doc.confirmation_date" t-esc="str(doc.confirmation_date)[:-8]"/>
+                                        <span t-field='doc.confirmation_date'></span>
+                        </div>
+                        <div>
+                                    <div nowrap='' colspan='3' style='border:1px solid #808B96;border-collapse:collapse;text-align: center;'>Payment method and bank address</div>
+                                    <div nowrap='' colspan='3' style='border:1px solid #808B96;border-collapse:collapse;text-align: left;'>
+                                        <t t-if="doc.payment_term_id">
+                                        <span t-field="doc.payment_term_id" ></span> ,
+                                        <span t-field="doc.company_id.partner_id.bank_ids.acc_number"></span>
+                                        </t>
+                                        <t t-if="not(doc.payment_term_id)">
+                                            <span t-field="doc.company_id.partner_id.bank_ids.acc_number"></span>
+                                        </t>
+                                    </div>
+                        </div>
+        </div>-->
+
+        <div class="footer o_standard_footer" style="font-size:8px;">
+            <div class="text-center" style="border-top: 1px solid black; font-size: 8px;">
+                <ul class="list-inline mb4">
+                    <li t-if="company.phone" class="list-inline-item">Tel: <span t-field="company.phone"/></li>
+                    <li t-if="company.email" class="list-inline-item">Email: <span t-field="company.email"/></li>
+                    <li t-if="company.website" class="list-inline-item">Web: <span t-field="company.website"/></li>
+                    <li t-if="company.vat" class="list-inline-item"><t t-esc="(company.country_id.vat_label or 'Tax ID').replace(' ','\N{NO-BREAK SPACE}')"/>: <span t-esc="company.vat.replace(' ','\N{NO-BREAK SPACE}')"/></li>
+                </ul>
+
+                <div name="financial_infos">
+                    <span t-field="company.report_footer"/>
+                </div>
+
+                <div t-if="report_type == 'pdf'" class="text-muted">
+                    Page: <span class="page"/> / <span class="topage"/>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <template id="report_saleorder_document_custom2">
+            <t t-set="company" t-value="doc.company_id"/>
+            <t t-set="partner" t-value="doc.partner_id"/>
+            <t t-call="web.html_container">
+                <t t-call="stock_mgmt.saleorder_report_external_layout">
+                <t t-foreach="docs" t-as="o">
+                    <t t-if="o and 'company_id' in o">
+                        <t t-set="company" t-value="o.company_id.sudo()" />
+                    </t>
+                    <t t-if="not o or not 'company_id' in o">
+                        <t t-set="company" t-value="res_company" />
+                    </t>
+
+                    <style type="text/css">
+                        table,
+                        tr,
+                        td {
+                            border: 1px solid #e1e4e8;
+                        }
+
+                        td.tr0.td5,
+                        td.tr15.td1 {
+                            text-align: left;
+                            vertical-align: top;
+                            font-size: 8px;
+                        }
+
+                        table.header-table, p {
+                            text-align: center;
+                            margin: 2px !important;
+                        }
+
+                        table {
+                            font-size: 10px;
+                        }
+
+                        .header-table td {
+                            padding: 3px !important;
+                        }
+
+                        td.tr6.td0,
+                        td.tr6.td1,
+                        td.tr6.td14 {
+                            vertical-align: bottom;
+                        }
+
+                        #id1_1_2 {
+                            float: right;
+                            display: inline-block;
+                        }
+
+                        #id1_1_1 {
+                            display: inline-block;
+                        }
+                    </style>
+
+
+                    <!-- Header code start here -->
+                    <!-- Body code start here -->
+                    <div class="row zero_min_height" style="font-size: 12px;">
+                    <table width='100%' align='center' style='padding-top:25px;padding-bottom:20px; font-size: 10px;'>
+                            <tbody>
+                                <t t-set="partner" t-value="doc.partner_id"></t>
+                                <tr>
+
+                                    <td width='40%' style='font-family:sans-serif;font-size: 10px !IMPORTANT;'>
+                                        <strong>&#x2063;</strong><br/>
+                                        <span t-field="company.partner_id" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;], &quot;no_marker&quot;: true}" />
+                                    </td>
+                                    <td width='35%' style='font-family:sans-serif;font-size: 10px !IMPORTANT;'>
+                                        <t t-set="address"/>
+                                        <strong style='color:red;'>Indirizzo di fatturazione</strong><p style="font-size:7px; padding:0px; text-align: left;">Billing address</p>
+                                        <span style='font-family:sans-serif;font-size: 10px;' t-field="doc.partner_id" t-options='{"widget": "contact", "fields": ["address", "name",], "no_marker": True}' />
+                                    </td>
+                                    <td width='25%' style='font-family:sans-serif;font-size: 10px !IMPORTANT;'>
+                                        <t t-set="address" />
+                                        <strong style='color:red;'>Indirizzo di consegna</strong><p style="font-size:7px; padding:0px; text-align: left;">Delivery address</p>
+                                        <span style='font-family:sans-serif;font-size: 10px;' t-field="doc.partner_shipping_id" t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": True}' />
+                                    </td>
+
+                                </tr>
+                                <tr style="font-size: 10px;">
+                                    <td width='40%'><span t-field='company.vat'></span></td>
+                                    <td width='35%'><span t-field='partner.vat'></span></td>
+                                    <td width='25%'><span t-field='doc.partner_shipping_id.vat'></span></td>
+                                </tr>
+                                <tr style="font-size: 10px;">
+                                    <td width='40%'>tel: <span t-field='company.phone'></span></td>
+                                    <td width='35%'>tel: <span t-field='partner.phone'></span></td>
+                                    <td width='25%'>tel: <span t-field='doc.partner_shipping_id.phone'></span></td>
+                                </tr>
+                                <tr style="font-size: 10px;">
+                                    <td width='40%'><span t-field='company.email'></span></td>
+                                    <td width='35%'><span t-field='partner.email'></span></td>
+                                    <td width='25%'><span t-field='doc.partner_shipping_id.email'></span></td>
+                                </tr>
+                                <tr style="font-size: 10px;">
+                                    <td width='40%'>Cod. SDI: <span t-field='company.partner_id.codice_destinatario'></span></td>
+                                    <td width='35%'>Cod. SDI: <span t-field='partner.codice_destinatario'></span></td>
+                                    <td width='25%'><strong>&#x2063;</strong><br/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                         <table width='100%' cellpadding='8' cellspacing='0' align="center" style='border-collapse:collapse; margin-top:11px;text-align:center;'>
+                             <thead style='border:1px solid  #808B96;background-color:#D0D3D4;border-collapse:collapse;'>
+                             <tr>
+                                <t t-if="not (env.context.get('proforma', False) or is_pro_forma)">
+                                    <th nowrap='' style='border:1px solid #808B96;border-collapse:collapse;' colspan='6' t-if="doc.state not in ['draft','sent']">Conferma d'ordine <p style="font-size:7px; padding:0px;">Sales order confirmation</p></th>
+                                    <th nowrap='' style='border:1px solid #808B96;border-collapse:collapse;' colspan='6' t-if="doc.state in ['draft','sent']">Preventivo <p style="font-size:7px; padding:0px;">Quotation</p></th>
+                                </t>
+                                <t t-if="env.context.get('proforma', False) or is_pro_forma">
+                                    <th nowrap='' style='border:1px solid #808B96;border-collapse:collapse;' colspan='6'>Fattura Pro-Forma <p style="font-size:7px; padding:0px;">Pro-Forma Invoice</p></th>
+                                </t>
+                                <!--<th t-field="doc.name"/>-->
+                                <!--<th nowrap='' style='border:1px solid #808B96;border-collapse:collapse;' colspan='6'>CONFERMA ORDINE</th><p style="font-size:7px; padding:0px;">Billing address</p>-->
+                             </tr>
+                            <tr>
+                                <th nowrap='' style='border:1px solid #808B96;border-collapse:collapse;'>Data di richiesta <p style="font-size:7px; padding:0px;">Inquiry date</p></th>
+                                <th nowrap='' style='border:1px solid #808B96;border-collapse:collapse;'>
+                                    <t t-if="doc.date_order">
+                                        <span t-field="doc.date_order" t-options='{"widget": "date"}' />
+                                    </t>
+                                </th>
+                                <th nowrap='' style='border:1px solid #808B96;border-collapse:collapse;'>N. Ordine <p style="font-size:7px; padding:0px;">Order #</p></th>
+                                <th nowrap='' style='border:1px solid #808B96;border-collapse:collapse;'><span t-field='doc.name'></span></th>
+                                <th nowrap='' style='border:1px solid #808B96;border-collapse:collapse;'>Data conferma ordine <p style="font-size:7px; padding:0px;">Confirmation date</p></th>
+                                <th nowrap='' style='border:1px solid #808B96;border-collapse:collapse;'>
+                                    <t t-if="doc.confirmation_date">
+                                        <span t-field="doc.confirmation_date" t-options='{"widget": "date"}' />
+                                    </t>
+                                </th>
+                            </tr>
+                            <tr>
+                                <th nowrap='' colspan="2" style='border:1px solid #808B96;border-collapse:collapse;text-align: center;'>Condizioni di trasporto <p style="font-size:7px; padding:0px;">Delivery terms</p></th>
+                                <th nowrap='' style='border:1px solid #808B96;border-collapse:collapse;text-align: left;'>
+                                    <t t-if="doc.incoterm">
+                                        <span t-field="doc.incoterm" ></span>
+                                    </t>
+                                </th>
+                                <th nowrap='' colspan="2" style='border:1px solid #808B96;border-collapse:collapse;text-align: center;'>Agente <p style="font-size:7px; padding:0px;">Agent</p></th>
+                                <th nowrap='' style='border:1px solid #808B96;border-collapse:collapse;text-align: left;'>
+                                    <t t-if="doc.user_id">
+                                        <span t-field="doc.user_id" ></span>
+                                    </t>
+                                </th>
+                            </tr>
+                            <tr>
+                                <th nowrap='' colspan='2' style='border:1px solid #808B96;border-collapse:collapse;text-align: center;'>Dettagli pagamento <p style="font-size:7px; padding:0px;">Payment details</p></th>
+                                <th nowrap='' colspan='2' style='border:1px solid #808B96;border-collapse:collapse;text-align: left;'>
+                                    <t t-if="doc.payment_term_id">
+                                        <span t-field="doc.payment_term_id" ></span> , IBAN:
+                                        <span t-field="doc.company_id.partner_id.bank_ids.acc_number"></span>
+                                    </t>
+                                    <t t-if="not(doc.payment_term_id)">
+                                        IBAN: <span t-field="doc.company_id.partner_id.bank_ids.acc_number"></span>
+                                    </t>
+                                </th>
+                                <th nowrap='' colspan='1' style='border:1px solid #808B96;border-collapse:collapse;text-align: center;'>Totale paia<p style="font-size:7px; padding:0px;">Total pairs</p></th>
+                                <th nowrap='' colspan='1' style='border:1px solid #808B96;border-collapse:collapse;text-align: center;'>
+                                   <span t-field="doc.pairs_total" ></span>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th nowrap=''>
+                                    &#x2063;
+                                </th>
+                            </tr>
+                        </tbody>
+                        </table>
+            <!-- Body  part code end -->
+            <div class="page">
+                <DIV id="page_1">
+                <DIV id="id1_2">
+                    <!-- Is there a discount on at least one line? -->
+                    <t t-set="display_discount" t-value="any([l.discount for l in doc.order_line])"/>
+
+                    <table width='100%' class="table table-sm o_main_table" cellspacing='0' style='font-size: 10px;'>
+                        <thead style='border:1px solid black;'>
+                            <tr>
+                                <th style='border:1px solid #808B96;border-collapse:collapse;'>Immagine<p style="font-size:7px; padding:0px; text-align: left;">Image</p></th>
+                                <th style='border:1px solid #808B96;border-collapse:collapse;'>Ext.Cod.<p>&#x2063;</p></th>
+                                <th style='border:1px solid #808B96;border-collapse:collapse;'>Descrizione<p style="font-size:7px; padding:0px; text-align: left;">Description</p></th>
+                                <th style='border:1px solid #808B96;border-collapse:collapse;'>Quantità<p style="font-size:7px; padding:0px; text-align: left;">Quantity</p></th>
+                                <th style='border:1px solid #808B96;border-collapse:collapse;'>Prezzo unitario<p style="font-size:7px; padding:0px; text-align: left;">Unit Price</p></th>
+                                <th style='border:1px solid #808B96;border-collapse:collapse;'>Dalla taglia<p style="font-size:7px; padding:0px; text-align: left;">From size</p></th>
+                                <th style='border:1px solid #808B96;border-collapse:collapse;'>Alla taglia<p style="font-size:7px; padding:0px; text-align: left;">To size</p></th>
+                                <th style='border:1px solid #808B96;border-collapse:collapse;'>Assort<p>&#x2063;</p></th>
+                                <th style='border:1px solid #808B96;border-collapse:collapse;'>Distr. taglie<p style="font-size:7px; padding:0px; text-align: left;">Size distribution</p></th>
+                                <th style='border:1px solid #808B96;border-collapse:collapse;'>Paia totali<p style="font-size:7px; padding:0px; text-align: left;">Total pairs</p></th>
+                                <th style='border:1px solid #808B96;border-collapse:collapse;' t-if="display_discount" class="text-right" groups="sale.group_discount_per_so_line">
+                                <span>Sconto (%) </span><p style="font-size:7px; padding:0px;">Discount (%)</p>
+                                <!-- TODO: remove in master -->
+                                <t t-set="colspan" t-value="colspan1"/>
+                                </th>
+                                <th style='border:1px solid #808B96;border-collapse:collapse;'>IVA <p style="font-size:7px; padding:0px; text-align: left;">VAT</p></th>
+                                <th style='border:1px solid #808B96;border-collapse:collapse;'>Imponibile tot.<p style="font-size:7px; padding:0px; text-align: left;">Subtotal</p></th>
+                            </tr>
+                        </thead>
+                        <t t-set="tax_list" t-value="[]"/>
+                            <tbody>
+                                <t t-foreach="o.order_line" t-as="line">
+                                    <t t-if="line.display_type == 'line_section'">
+                                    <td colspan="99" style='border:1px solid #808B96;border-collapse:collapse;'>
+                                        <span t-field="line.name"/>
+                                    </td>
+                                    <t t-set="current_section" t-value="line"/>
+                                    <!--<t t-set="current_subtotal" t-value="0"/>-->
+                                    </t>
+                                    <t t-if="line.display_type == 'line_note'">
+                                        <td colspan="99" style='border:1px solid #808B96;border-collapse:collapse;'>
+                                        <span t-field="line.name"/>
+                                    </td>
+                                    </t>
+                                    <t t-if="not(line.display_type == 'line_note')">
+                                    <t t-if="not(line.display_type == 'line_section')">
+                                    <t t-if="not(line.product_id.is_kit)">
+                                        <tr>
+                                            <td style='border:1px solid #808B96;border-collapse:collapse;'>
+                                                <img t-attf-src="data:image/*;base64,{{line.product_id.image}}" style="height:50px;width:80px" />
+                                            </td>
+                                            <td style='border:1px solid #808B96;border-collapse:collapse;'>
+                                                <span t-field="line.external_code" />
+                                            </td>
+                                            <td style='border:1px solid #808B96;border-collapse:collapse;'>
+                                                <span t-field="line.name" />
+                                            </td>
+                                            <td style='border:1px solid #808B96;border-collapse:collapse;'>
+                                                <span t-field="line.product_uom_qty" />
+                                                <span t-field="line.product_uom" groups="uom.group_uom" />
+                                            </td>
+                                            <td style='border:1px solid #808B96;border-collapse:collapse;'>
+                                                <span t-field="line.price_unit" /> <span t-field="doc.pricelist_id.currency_id" />
+                                            </td>
+                                            <td style='border:1px solid #808B96;border-collapse:collapse;'>
+                                                <span t-field="line.product_id.attribute_value_ids.name" />
+                                            </td>
+                                            <td style='border:1px solid #808B96;border-collapse:collapse;'>
+                                                <span t-field="line.product_id.attribute_value_ids.name" />
+                                            </td>
+                                            <td style='border:1px solid #808B96;border-collapse:collapse;'>
+                                                <span><![CDATA[&nbsp;]]></span>
+                                            </td>
+                                            <td style='border:1px solid #808B96;border-collapse:collapse;
+                                                word-break: break-all;'>
+                                                <div><span t-field="line.pairs_total"></span>(<span t-field="line.product_id.attribute_value_ids.name"></span>)</div>
+                                            </td>
+                                            <td style='border:1px solid #808B96;border-collapse:collapse;'>
+                                                <span t-field="line.pairs_total" />
+                                            </td>
+                                            <td style='border:1px solid #808B96;border-collapse:collapse;' t-if="display_discount"  groups="sale.group_discount_per_so_line">
+                                            <span t-field="line.discount"/>
+                                            </td>
+                                            <td style='border:1px solid #808B96;border-collapse:collapse;'>
+                                                <span t-field="line.tax_id.description" />
+                                                    <t t-set="tax_list" t-value="tax_list+[line.tax_id.name]"/>
+                                            </td>
+                                            <td style='border:1px solid #808B96;border-collapse:collapse;'>
+                                                <span t-field="line.price_subtotal" />
+                                            </td>
+                                        </tr>
+                                    </t></t></t>
+                                    <t t-if="line.product_id.is_kit">
+                                        <tr>
+                                            <td style='border:1px solid #808B96;border-collapse:collapse;'>
+                                                <img t-attf-src="data:image/*;base64,{{line.product_id.image}}" style="height:50px;width:80px" />
+                                            </td>
+                                            <td style='border:1px solid #808B96;border-collapse:collapse;'>
+                                                <span t-field="line.external_code" />
+                                            </td>
+                                            <td style='border:1px solid #808B96;border-collapse:collapse;'>
+                                                <span t-field="line.name" />
+                                            </td>
+                                            <td style='border:1px solid #808B96;border-collapse:collapse;'>
+                                                <span t-field="line.product_uom_qty" />
+                                                <span t-field="line.product_uom" groups="uom.group_uom" />
+                                            </td>
+                                            <td style='border:1px solid #808B96;border-collapse:collapse;'>
+                                                <span t-field="line.price_unit" /> <span t-field="doc.pricelist_id.currency_id" />
+                                            </td>
+                                            <td style='border:1px solid #808B96;border-collapse:collapse;'>
+                                                <span t-field="line.range_start" />
+                                            </td>
+                                            <td style='border:1px solid #808B96;border-collapse:collapse;'>
+                                                <span t-field="line.range_end" />
+                                            </td>
+                                            <td style='border:1px solid #808B96;border-collapse:collapse;'>
+                                                <span t-field="line.assortment_id.code" />
+                                            </td>
+                                            <td style='border:1px solid #808B96;border-collapse:collapse;
+                                                word-break: break-all;'>
+                                                <span t-field="line.pairs_size" />
+                                            </td>
+                                            <td style='border:1px solid #808B96;border-collapse:collapse;'>
+                                                <span t-field="line.pairs_total" />
+                                            </td>
+                                            <td style="border:1px solid #808B96;border-collapse:collapse;" t-if="display_discount"  groups="sale.group_discount_per_so_line">
+                                                <span t-field="line.discount"/>
+                                            </td>
+                                            <td style='border:1px solid #808B96;border-collapse:collapse;'>
+                                                <span t-field="line.tax_id.description" />
+                                                    <t t-set="tax_list" t-value="tax_list+[line.tax_id.name]"/>
+                                            </td>
+                                            <td style='border:1px solid #808B96;border-collapse:collapse;'>
+                                                <span t-field="line.price_subtotal" />
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </t>
+                            </tbody>
+                    </table>
+                </DIV>
+                    <div class="row col-12 clearfix" style='padding-top:5px;'>
+                    <table class="table table-sm o_main_table" style='border:1px solid #808B96; border-collapse: collapse;' align="center" cellpadding='5'>
+                        <tbody style='text-align:center;'>
+                            <tr style="background-color:#D0D3D4;">
+                                <th style='border:1px solid #808B96;border-collapse:collapse;'>Imponibile prodotti<p style="font-size:7px; padding:0px;">Subtotal</p></th>
+                                <th style='border:1px solid #808B96;border-collapse:collapse;'>IVA sui prodotti %<p style="font-size:7px; padding:0px;">VAT %</p></th>
+                                <th style='border:1px solid #808B96;border-collapse:collapse;'>Importo IVA sui prodotti<p style="font-size:7px; padding:0px;">VAT €</p></th>
+                                <th style='border:1px solid #808B96;border-collapse:collapse;'>Imponibile Trasporto <p style="font-size:7px; padding:0px;">Freight charges</p></th>
+                                <th style='border:1px solid #808B96;border-collapse:collapse;'>IVA sul trasporto % <p style="font-size:7px; padding:0px;">VAT on freight</p></th>
+                                <!--<th style='border:1px solid #808B96;border-collapse:collapse;'>IVA sul trasporto €</th>-->
+                                <!--<th style='border:1px solid #808B96;border-collapse:collapse;'>Totale Trasporto</th>-->
+                                <th style='border:1px solid #808B96;border-collapse:collapse;'>Paia tot. <p style="font-size:7px; padding:0px;">Total pairs</p></th>
+                                <th style='border:1px solid #808B96;border-collapse:collapse;'>Totale a saldo <p style="font-size:7px; padding:0px;">Total to be paid</p></th>
+                            </tr>
+                            <tr>
+                                <td style='border:1px solid #808B96;border-collapse:collapse;'>
+                                    <span t-field="doc.amount_untaxed" />
+                                </td>
+                                <td style='border:1px solid #808B96;border-collapse:collapse;'>&#x2063;
+                                    <t t-set="vat" t-value='str(set(tax_list))'></t>
+                                    <t t-set="vat" t-value='vat.replace("{","")'></t>
+                                    <t t-esc='vat.replace("}","")'></t>
+                                </td>
+                                <td style='border:1px solid #808B96;border-collapse:collapse;'>
+                                     <!--<span t-field="doc.amount_tax" t-field-options='{"widget": "monetary", "display_currency": "doc.pricelist_id.currency_id"}' />-->
+                                    <span t-field="doc.amount_tax" />
+                                </td>
+                                <td style='border:1px solid #808B96;border-collapse:collapse;'>&#x2063;</td>
+                                <td style='border:1px solid #808B96;border-collapse:collapse;'>&#x2063;</td>
+                                <!--<td style='border:1px solid #808B96;border-collapse:collapse;'>&#x2063;</td>
+                                <td style='border:1px solid #808B96;border-collapse:collapse;'>&#x2063;</td>-->
+                                <td style='border:1px solid #808B96;border-collapse:collapse;'>
+                                    <span t-field="doc.pairs_total" />
+                                </td>
+                                <td style='border:1px solid #808B96;border-collapse:collapse;'>
+                                    <span t-field="doc.amount_total" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td nowrap='' style='border:1px solid white;'>&#x2063;</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="row col-12 clearfix" style='padding-top:-10px;'>
+                    <table width='100%' class="table table-sm o_main_table" style="border:1px solid #808B96;border-bottom:1px solid white; border-collapse: collapse;">
+                        <tbody>
+                            <tr>
+                                <td width='26%'>
+                                   Per accettazione
+                                    <br/>Timbro e firma del cliente
+                                    <p style="font-size:7px; padding:0px; text-align: left;">Stamp and signature for acceptance</p>
+                                </td>
+                                <td width='37%'>
+                                    &#x2063;
+                                </td>
+                                <td width='37%'>
+                                    &#x2063;
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                </DIV>
+            </div>
+                </t>
+            </t>
+        </t>
+        </template>
+        <template id="report_saleorder_main_custom2">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="doc">
+                    <t t-call="stock_mgmt.report_saleorder_document_custom2" t-lang="doc.partner_id.lang"/>
+                </t>
+            </t>
+        </template>
+        <report string="Quotation / Order Custom2"
+                id="action_report_saleorder_custom2"
+                model="sale.order"
+                report_type="qweb-pdf"
+                paperformat="stock_mgmt.paperformat_sale"
+                file="stock_mgmt.report_saleorder_main_custom2"
+                name="stock_mgmt.report_saleorder_main_custom2"
+                print_report_name="(object.state in ('draft', 'sent') and 'Quotation - %s' % (object.name)) or 'Order - %s' % (object.name)" />
+    </odoo>

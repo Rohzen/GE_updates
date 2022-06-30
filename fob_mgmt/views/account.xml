@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+      <record id="partner_form_fob_mod" model="ir.ui.view">
+        <field name="name">partner.fob.form</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='ref']" position="replace">
+            </xpath>
+            <xpath expr="//field[@name='vat']" position="after">
+                <field name="ref" string="Codice cliente/fornitore"/>
+            </xpath>
+        </field>
+      </record>
+
+
+      <record id="invoice_form_fob_mod" model="ir.ui.view">
+        <field name="name">account.invoice.custfob.form</field>
+        <field name="model">account.invoice</field>
+        <field name="inherit_id" ref="account.invoice_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='partner_shipping_id']" position="after">
+                <field name="proforma_number"/>
+                <field name="bl_code" />
+                <field name="client_order_ref" />
+                <field name="incoterm_id" />
+                <field name="origin_goods" />
+                <field name="loading_port_id"/>
+                <field name="destination_port_id"/>
+<!--            <field name="etd_date" attrs="{'invisible': [('journal_id','!=',16)]}"/>-->
+                <field name="etd_date"/>
+                <field name="eta_date"/>
+                <field name="lcno" attrs="{'invisible': [('proforma_number','=',False)]}"/>
+<!--            <field name="deposit_amount"/>-->
+                <field name="container_no" attrs="{'invisible': [('proforma_number','=',False)]}"/>
+                <field name="tipo_container" attrs="{'invisible': [('proforma_number','=',False)]}"/>
+                <field name="loading_date" attrs="{'invisible': [('proforma_number','=',False)]}"/>
+                <field name="route" attrs="{'invisible': [('proforma_number','=',False)]}"/>
+                <field name="seal_no" attrs="{'invisible': [('proforma_number','=',False)]}"/>
+            </xpath>
+
+            <xpath expr="//field[@name='payment_term_id']" position="replace">
+            </xpath>
+
+<!--            <xpath expr="//field[@name='name']" position="after">-->
+<!--                <field name="proforma_number"/>-->
+<!--            </xpath>-->
+
+            <xpath expr="//field[@name='cash_rounding_id']" position="after">
+                <button name="set_rows" type="object" icon="/fob_mgmt/static/src/icons/upd_rows.png" class="btn-primary"/>
+            </xpath>
+
+            <xpath expr="//field[@name='team_id']" position="after">
+                <label for="payment_term_id" string="Payment terms"/>
+                <div class="o_row">
+                    <field name="payment_term_id"/>
+                    <button name="compute_accounts" type="object" string="Calcola acconti"/>
+                </div>
+                <field name="partner_bank"/>
+                <field name="no_claim_discount"/>
+                <field name="total_discount"/>
+                <field name="total_discounted_amount" invisible="1"/>
+                <field name="total_discount_value"/>
+                <field name="total_amount_in_value" invisible="1"/>
+                <field name="deposit_expected"/>
+                <field name="deposit_received"/>
+                <field name="deposit_pending_balance"/>
+                <field name="total_pending_balance"/>
+                <button name="compute_balance" string="Compute balance" type="object" icon="fa-dollar-sign" class="btn-primary text-right" attrs="{'invisible': [('proforma_number','=',False)]}"/>
+                <field name="shipped" attrs="{'invisible': [('proforma_number','=',False)]}"/>
+                <field name="pi_order_id" attrs="{'invisible': [('proforma_number','=',False)]}"/>
+            </xpath>
+
+<!--            <xpath expr="//field[@name='currency_id']" position="after">-->
+<!--                <button name="compute_balance" string="Compute balance" type="object" icon="fa-dollar-sign" class="btn-primary text-right"/>-->
+<!--            </xpath>-->
+
+            <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='product_id']" position="before">
+                <button name="compute_shortage" string="S" type="object" class="btn-primary text-right" attrs="{'invisible': [('proforma_number','=',False)]}"/>
+                <field name="pi_id"/>
+            </xpath>
+            <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='quantity']" position="before">
+                <field name="journal_id" invisible="1"/>
+            </xpath>
+            <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='pairs_total']" position="after">
+                <field name="proforma_number" invisible="1"/>
+                <field name="qty_delivered" />
+                <field name="tipo_container" attrs="{'invisible': [('proforma_number','=',False)]}"/>
+                <field name="container_no" attrs="{'invisible': [('proforma_number','=',False)]}"/>
+                <field name="seal_no" attrs="{'invisible': [('proforma_number','=',False)]}"/>
+            </xpath>
+            <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='discount']" position="after">
+                <field name="no_claim_discount" invisible="0"/>
+            </xpath>
+            <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='qty_delivered']" position="after">
+                <field name="shipping_state" attrs="{'invisible': [('proforma_number','=',False)]}"/>
+                <field name="shortage_qty" string="Shortage" attrs="{'invisible': [('proforma_number','=',False)]}"/>
+                <field name="unshipped_qty" attrs="{'invisible': [('proforma_number','=',False)]}"/>
+            </xpath>
+            <xpath expr="//field[@name='price_unit']" position="after">
+                <field name="value_unit_price" string="Unit price(V)"/>
+                <field name="value_unit_price" widget="monetary" options="{'currency_field': 'default_currency_id'}" invisible="1"/>
+            </xpath>
+            <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='price_subtotal']" position="after">
+                <field name="default_currency_id" invisible="1"/>
+<!--                <field name="deposit_received"/>-->
+<!--                <field name="deposit_amount"/>-->
+                <field name="value_price"/>
+<!--                <field name="value_price" widget="monetary" options="{'currency_field': 'default_currency_id'}" invisible="1"/>-->
+            </xpath>
+            <xpath expr="//field[@name='amount_total']" position="after">
+                <field name="default_currency_id" invisible="1"/>
+                <field name="total_value_price"/>
+                <field name="total_value_price" widget="monetary" options="{'currency_field': 'default_currency_id'}" invisible="1"/>
+                <field name="packs_total"/>
+            </xpath>
+            <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='account_analytic_id']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='analytic_tag_ids']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+             <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='admin_ref']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//page[1]" position='after'>
+                 <page string="Acconti" name="accounts">
+                    <group>
+                    <field name="invoice_accounts">
+                        <tree editable="top">
+                            <field name="date"/>
+                            <field name="deposit"/>
+                            <field name="name"/>
+                            <field name="is_deposit"/>
+                            <field name="received"/>
+                        </tree>
+                    </field>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+      </record>
+
+<!--        <record id="account_invoice_moven_tree" model="ir.ui.view">-->
+<!--            <field name="name">account.invoice.moven.tree</field>-->
+<!--            <field name="model">account.invoice</field>-->
+<!--            <field name="arch" type="xml">-->
+<!--                <tree decoration-info="state == 'draft'" decoration-muted="state == 'cancel'" string="Invoice">-->
+<!--                    <field name="partner_id" groups="base.group_user" string="Customer"/>-->
+<!--                    <field name="date_invoice"/>-->
+<!--                    <field name="number"/>-->
+<!--                    <field name="commercial_partner_id" invisible="1"/>-->
+<!--                    <field name="reference" invisible="1"/>-->
+<!--                    <field name="name" invisible="1"/>-->
+<!--                    <field name="journal_id" invisible="1"/>-->
+<!--                    <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>-->
+<!--                    <field name="user_id"/>-->
+<!--                    <field name="date_due"/>-->
+<!--                    <field name="origin"/>-->
+<!--                    <field name="amount_untaxed_invoice_signed" string="Tax Excluded" sum="Total"/>-->
+<!--                    <field name="amount_tax_signed" string="Tax" sum="Total"/>-->
+<!--                    <field name="amount_total_signed" string="Total" sum="Total"/>-->
+<!--                    <field name="residual_signed" string="Amount Due" sum="Amount Due"/>-->
+<!--                    <field name="currency_id" invisible="1"/>-->
+<!--                    <field name="company_currency_id" invisible="1"/>-->
+<!--                    <field name="state"/>-->
+<!--                    <field name="type" invisible="context.get('type',True)"/>-->
+<!--                </tree>-->
+<!--            </field>-->
+<!--        </record>-->
+
+<!--        <record id="view_moven_search" model="ir.ui.view">-->
+<!--            <field name="name">account.moven.select</field>-->
+<!--            <field name="model">account.invoice</field>-->
+<!--            <field name="arch" type="xml">-->
+<!--                <search string="Search Invoice">-->
+<!--                    <field name="number" string="Invoice" filter_domain="['|','|','|', ('number','ilike',self), ('origin','ilike',self), ('reference', 'ilike', self), ('partner_id', 'child_of', self)]"/>-->
+<!--                    <filter domain="[('user_id','=',uid)]" name="myinvoices" help="My Invoices"/>-->
+<!--                    <separator/>-->
+<!--                    <filter name="draft" string="Draft" domain="[('state','=','draft')]"/>-->
+<!--                    <separator/>-->
+<!--                    <field name="partner_id" operator="child_of"/>-->
+<!--                    <field name="user_id" string="Salesperson" domain="[('share','=', False)]"/>-->
+<!--                    <field name="date" string="Period"/>-->
+<!--               </search>-->
+<!--            </field>-->
+<!--        </record>-->
+
+</odoo>

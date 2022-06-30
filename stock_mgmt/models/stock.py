@@ -1,0 +1,523 @@
+# -*- coding: utf-8 -*-
+# Part of Odoo. See LICENSE file for full copyright and licensing details.
+from datetime import datetime, timedelta
+
+from odoo import api, models, fields, _
+from odoo.addons import decimal_precision as dp
+from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT
+from odoo.tools.float_utils import float_compare, float_is_zero, float_round
+from odoo.exceptions import UserError
+from odoo.tests.common import TransactionCase
+
+
+class StockMove(models.Model):
+    _inherit = "stock.move"
+
+    received_qty = fields.Float("Q.ta ricevuta")
+    barcode = fields.Char('Barcode')
+    invoiced = fields.Integer('Fatturati')
+    # to_invoice = fields.Integer('Da fatturare')
+    owner_id = fields.Many2one('res.partner', 'Owner', help="Owner of the quants")
+    weight = fields.Float('Weight', digits=dp.get_precision('Stock Weight'),
+                          help="Weight of the product, packaging not included. The unit of measure can be changed in the general settings")
+    weight_gross = fields.Float('Gross weight', digits=dp.get_precision('Stock Weight'),
+                                help="Weight of the product, packaging not included. The unit of measure can be changed in the general settings")
+    pack_volume = fields.Float('Pack Volume', help="The volume in m3.", digits=dp.get_precision('Stock Volume'))
+
+    company_group = fields.Char('Group', compute='_compute_group')
+    product_brand = fields.Char('Brand', compute='_compute_brand')
+    to_invoice = fields.Integer('Da fatturare', compute='_compute_move')
+
+    @api.multi
+    def write(self, values):
+        res = super(StockMove, self).write(values)
+        if not self.env.context.get('skip_update_line_ids', True):
+            pack_to_update = self.env['stock.picking.package.preparation']
+            for move in self:
+                pack_to_update |= move.get_packs()
+            if pack_to_update:
+                pack_to_update._update_line_ids()
+        return res
+
+    @api.one
+    def _compute_group(self):
+        self.company_group = self.owner_id.company_group_id.name
+
+    @api.one
+    def _compute_brand(self):
+        # prod = self.env['product.template'].browse(self.product_id)
+        self.product_brand = self.product_id.product_brand_id.name
+
+    @api.one
+    def _compute_move(self):
+        self.to_invoice = self.product_uom_qty
+        # origin = self.origin
+        # origin_ids = self.env['purchase.order'].search([['name',  '=', origin]])
+        # for order in origin_ids:
+        # if order:
+        # self.pairs_total = order.pairs_total
+
+
+class OwnerStock(models.Model):
+    _name = "stock.owner"
+    _description = "Report conto vendita"
+
+    move_id = fields.Char('Move id')
+    product_id = fields.Many2one('product.product', 'Prodotto')
+    invoiced = fields.Integer('Fatturati')
+    to_invoice = fields.Integer('Da fatturare')
+    owner_id = fields.Many2one('res.partner', 'Cliente', help="Owner of the quants")
+    riferimenti_fattura = fields.Char('Riferimenti fattura')
+
+
+class ConfirmOwnerMove(models.TransientModel):
+    _name = 'stock.owner.confirm'
+    _description = 'Confirm owner moves'
+
+    @api.multi
+    def write_sales_owner(self):
+        stock_move = self.env['stock.move'].search([])
+        for move in stock_move:
+            stock_picking = self.env['stock.picking'].browse(move.picking_id.id)
+            move.with_context(skip_update_line_ids=True).write({'owner_id': stock_picking.owner_id.id, })
+
+        self.env.cr.execute("DELETE FROM stock_owner")
+        stock_move = self.env['stock.move'].search([('owner_id', '!=', None)], order="owner_id,product_id")
+        #TEST
+        #stock_move = self.env['stock.move'].search([('owner_id', 'in', [580,582])], order="owner_id,product_id")
+
+        Invoiced = 0
+        to_invoice = 0
+        tmp_owner_id = (0, 0)
+        invoice_calculated = []
+        owner = None
+        product = None
+        riferimenti_fattura = ''
+
+        ### Tutte le bolle di consegna
+        for move in stock_move:
+            owner_id = move.owner_id
+            product_id = move.product_id
+
+            if owner_id and owner_id.id > 0 and tmp_owner_id != (owner_id, product_id):
+                tmp_owner_id = (owner_id, product_id)
+
+                filtered_stock_move = self.env['stock.move'].search(
+                    [('product_id', '=', product_id.id), ('owner_id', '=', owner_id.id)])
+                for fmove in filtered_stock_move:
+                    to_invoice += fmove.product_uom_qty
+
+                ### Gestiamo fatture e note di credito
+
+                account_invoice_ids = self.env['account.invoice'].search(
+                    [('partner_shipping_id', '=', owner_id.id), ('state', '!=', 'draft'), ('type', 'in', ['out_invoice','out_refund']), ('journal_id', '!=', 15), ('dest_partner_id', '!=', 'True')])
+                for inv in account_invoice_ids:
+                    account_line_invoice_ids = self.env['account.invoice.line'].search(
+                        [('invoice_id', '=', inv.id), ('product_id', '=', product_id.id)])
+                    ### Tutte le righe fatturate per quel prodotto cliente
+                    for lines in account_line_invoice_ids:
+                        if lines.quantity > 0:
+                            if inv.type == 'out_invoice':
+                                Invoiced += lines.quantity
+                            elif inv.type == 'out_invoice':
+                                Invoiced -= lines.quantity
+                            riferimenti_fattura += str(inv.number) + '\n'
+
+                try:
+                    id_own = self.env['stock.owner'].create(
+                        {'move_id': str(move.id), 'invoiced': Invoiced, 'to_invoice': to_invoice,
+                         'owner_id': owner_id.id, 'product_id': product_id.id,
+                         'riferimenti_fattura': riferimenti_fattura})
+                    Invoiced = 0
+                    to_invoice = 0
+                    riferimenti_fattura = ''
+                except:
+                    pass
+
+                ### Gestiamo movimentazioni da magazzino a magazzino
+
+                account_invoice_ids = self.env['account.invoice'].search(
+                    [('partner_id', '=', owner_id.id), ('state', '!=', 'draft'), ('type', 'in', ['out_invoice']), ('journal_id', '=', 15), ('dest_partner_id', '!=', 'False')])
+                for inv in account_invoice_ids:
+                    to_move = 0
+                    account_line_invoice_ids = self.env['account.invoice.line'].search(
+                        [('invoice_id', '=', inv.id), ('product_id', '=', product_id.id)])
+                    ### Tutte le righe fatturate per quel prodotto cliente
+                    for lines in account_line_invoice_ids:
+                        if lines.quantity > 0:
+                            dest_partner_id = inv.dest_partner_id
+                            to_move = to_move + lines.quantity
+                            riferimenti_fattura += str(inv.number) + '\n'
+
+                    if (to_move!=0) and dest_partner_id:
+                        try:
+                            id_own = self.env['stock.owner'].create(
+                                {'move_id': str(move.id), 'invoiced': 0, 'to_invoice': to_move*-1,
+                                 'owner_id': owner_id.id, 'product_id': product_id.id,
+                                 'riferimenti_fattura': riferimenti_fattura + 'DA TRASF.IN ENTRATA'})
+                            id_own = self.env['stock.owner'].create(
+                                {'move_id': str(move.id), 'invoiced': 0, 'to_invoice': to_move,
+                                 'owner_id': dest_partner_id.id, 'product_id': product_id.id,
+                                 'riferimenti_fattura': riferimenti_fattura + 'DA TRASF.IN USCITA'})
+                            riferimenti_fattura = ''
+                        except:
+                            pass
+
+                ### Gestiamo movimentazioni aggiuntive per allineare fatture cumulative
+
+                account_invoice_ids = self.env['account.invoice'].search(
+                    [('partner_id', '=', owner_id.id), ('state', '!=', 'draft'), ('type', 'in', ['out_invoice']), ('journal_id', '=', 15), ('dest_partner_id', '!=', 'True')])
+                for inv in account_invoice_ids:
+                    to_move = 0
+                    account_line_invoice_ids = self.env['account.invoice.line'].search(
+                        [('invoice_id', '=', inv.id), ('product_id', '=', product_id.id)])
+                    ### Tutte le righe fatturate per quel prodotto cliente
+                    for lines in account_line_invoice_ids:
+                        if lines.quantity > 0:
+                            #dest_partner_id = inv.dest_partner_id
+                            to_move = to_move + lines.quantity
+                            riferimenti_fattura += str(inv.number) + '\n'
+
+                    # if (to_move!=0):
+                        # try:
+                            # id_own = self.env['stock.owner'].create(
+                                # {'move_id': str(move.id), 'invoiced': to_move, 'to_invoice': 0,
+                                 # 'owner_id': owner_id.id, 'product_id': product_id.id,
+                                 # 'riferimenti_fattura': riferimenti_fattura + 'DA MOVE AGG'})
+                            # riferimenti_fattura = ''
+                        # except:
+                            # pass
+
+        xmlid = 'action_stock_owner_custom1'
+
+        return self.env['ir.actions.act_window'].for_xml_id(
+            module='stock_mgmt', xml_id=xmlid)
+
+class Incoming(models.Model):
+    _name = "stock.incoming"
+
+    stock_line_ids = fields.Char('stock_line_ids')
+    incoming_qty = fields.Float("Q.ta ricevuta")
+    residual_qty = fields.Float("Q.ta residua")
+    barcode = fields.Char('Barcode')
+    name = fields.Char('Collo')
+    product_id = fields.Many2one('product.product')
+    order_id = fields.Integer('Order ID')
+    picking_id = fields.Integer('Picking ID')
+    weight = fields.Float('Weight', digits=dp.get_precision('Stock Weight'),
+                          help="Weight of the product, packaging not included. The unit of measure can be changed in the general settings")
+    weight_gross = fields.Float('Gross weight', digits=dp.get_precision('Stock Weight'),
+                                help="Weight of the product, packaging not included. The unit of measure can be changed in the general settings")
+    pack_volume = fields.Float('Pack Volume', help="The volume in m3.", digits=dp.get_precision('Stock Volume'))
+    order_name = fields.Char('Order')
+    picking_name = fields.Char('Picking')
+    picking_type_id = fields.Many2one(
+        'stock.picking.type', 'Operation Type',
+        required=True,
+        readonly=True,
+        states={'draft': [('readonly', False)]})
+    location_id = fields.Many2one(
+        'stock.location', "Source Location",
+        default=lambda self: self.env['stock.picking.type'].browse(
+            self._context.get('default_picking_type_id')).default_location_src_id,
+        readonly=True, required=True,
+        states={'draft': [('readonly', False)]})
+    location_dest_id = fields.Many2one(
+        'stock.location', "Destination Location",
+        default=lambda self: self.env['stock.picking.type'].browse(
+            self._context.get('default_picking_type_id')).default_location_dest_id,
+        readonly=True, required=True,
+        states={'draft': [('readonly', False)]})
+    purchase_line_id = fields.Integer('purchase_line_id')
+    backorder_id = fields.Integer('backorder_id')
+    state = fields.Selection(
+        selection=[('waiting', 'In attesa'),
+                   ('done', 'Completato'),
+                   ('partial', 'Parziale'),
+                   ('cancel', 'Annullato'),
+                   ],
+    )
+
+
+class ConfirmMove(models.TransientModel):
+    _name = 'stock.incoming.confirm'
+    _description = 'Confirm product arrival'
+
+    @api.multi
+    def check_stock_sales(self):
+        stock_move = self.env['stock.move'].search([])
+        # for move in stock_move:
+        #    for move_lines    move.move_line_ids: #= fields.One2many('stock.move.line', 'move_id')
+
+        # Data, bolla, product_brand, company group, cliente, product, consegnati, fatturati
+
+        Invoiced = 0
+        tmp_owner_id = (0, 0)
+        invoice_calculated = []
+
+        ### Tutte le bolle di consegna
+        for move in stock_move:
+            owner_id = 0
+            ### Tutti i movimenti
+            for line in move.move_line_ids:
+                owner_id = move.picking_id.owner_id
+                product_id = line.product_id
+                product_uom_qty = line.product_uom_qty
+
+                account_invoice_ids = self.env['account.invoice'].search([('partner_id',  '=', owner_id.id),('state',  '!=', 'draft')])
+                for inv_line in account_invoice_ids:
+                    if inv_line.id in invoice_calculated:
+                        continue
+                    invoice_calculated.append(inv_line.id)
+                    account_line_invoice_ids = self.env['account.invoice.line'].search(
+                        [('invoice_id', '=', inv_line.id), ('product_id', '=', product_id.id)])
+
+                    ### Tutti le righe fatturate per quel prodotto cliente
+                    for lines in account_line_invoice_ids:
+                        #lambda x: x.state not in ('done', 'cancel')
+                        Invoiced += lines.quantity
+
+            if tmp_owner_id != (owner_id, product_id):
+                tmp_owner_id = (owner_id, product_id)
+
+                try:
+                    to_invoice = move.to_invoice - Invoiced
+                    move.with_context(skip_update_line_ids=True).write(
+                        {'invoiced': Invoiced, 'to_invoice': to_invoice, 'owner_id': owner_id.id})
+                except:
+                    pass
+
+                # move.write({'invoiced': Invoiced,'to_invoice':0, 'owner_id': owner_id.id })
+                Invoiced = 0
+            # move.write({'invoiced': Invoiced,'to_invoice':sale_line.qty_to_invoice,'owner_id': owner_id.id })
+
+            # Per aggiornare con quantità da ordini
+
+            # if move.sale_line_id:
+            #    sale_line = self.env['sale.order.line'].browse(move.sale_line_id.id)
+            #    move.write({'invoiced': sale_line.qty_invoiced,'to_invoice':sale_line.qty_to_invoice,'owner_id': owner_id.id })
+        return
+
+    @api.multi
+    def confirm_req(self):
+        # out_file = open("C:\\dev.txt","w")
+        pickings_done = []
+        pickings_line_done = []
+        confirm_qty = True
+
+        self.ensure_one()
+        id = 0
+        result = {}
+        quantities_done = {}
+        prs_quantities = 0
+
+        incoming_stock_ids = self.env.context.get('active_ids')
+        i = 0
+
+        ### Stock incoming - Ricezione colli
+        for incoming_stock_id in incoming_stock_ids:
+            i = i + 1
+            # out_file.write('-->:%s\n'%(str(i)))
+
+            stock_incoming = self.env['stock.incoming'].browse(incoming_stock_id)
+            picking = self.env['stock.picking'].browse(stock_incoming.picking_id)
+
+            # if stock_incoming.state == 'done':
+            # raise UserError(_("Ricezione già effettuata, verificare le ricezioni in magazzino."))
+
+            ### Gestione scarico inferiore in relazione a distinta base kit
+            bom_id = self.env['mrp.bom'].search(
+                [('product_tmpl_id', '=', stock_incoming.product_id.product_tmpl_id.id)])
+            if bom_id:
+                bom_ids = self.env['mrp.bom.line'].search([('bom_id', '=', bom_id[0].id)])
+                if bom_ids:
+                    for bom_line in bom_ids:
+                        qty_done = bom_line.product_qty * stock_incoming.incoming_qty
+                        prs_quantities += bom_line.product_qty
+                        quantities_done[bom_line.product_id.id] = qty_done
+
+                        # out_file.write('BOM QTA:%s PRODUCT ID:%s NAME:%s QTY TO BE SET DONE_%s\n'%(str(bom_line.product_qty),str(bom_line.product_id.id),str(bom_line.product_id.name),str(qty_done)))
+            else:
+                qty_done = stock_incoming.incoming_qty
+                prs_quantities += stock_incoming.incoming_qty
+                quantities_done[stock_incoming.product_id.id] = qty_done
+
+                # out_file.write('SINGLE QTA:%s PRODUCT ID:%s NAME:%s QTY TO BE SET DONE_%s\n'%(str(stock_incoming.incoming_qty),str(stock_incoming.product_id.id),str(stock_incoming.product_id.name),str(qty_done)))
+
+            ### Calcolo pesi e volumi
+            if prs_quantities > 0:
+                single_volume = stock_incoming.pack_volume / prs_quantities
+                single_weight = stock_incoming.weight / prs_quantities
+                single_gross = stock_incoming.weight_gross / prs_quantities
+
+            residual_qty = 0
+            completed_qty = 0
+            ### Gestione quantità ricevute
+            for move_lines in picking.move_lines:
+                ### line -> Stock Picking
+                for line in move_lines:
+                    #out_file.write('move purchase line id:%s incoming purchase line id:%s\n' % (str(line.purchase_line_id.id), str(stock_incoming.purchase_line_id)))
+
+                    if line.purchase_line_id.id == stock_incoming.purchase_line_id:
+                        ### stock_move_line.product_uom_qty : quantità da completare
+                        if quantities_done[line.product_id.id] > line.product_uom_qty:
+                            raise UserError(_("Errore quantità di %s maggiore rispetto all'ordine di consegna.") % (
+                                str(line.product_id.name)))
+                        else:
+                            for stock_move_line in self.env['stock.move.line'].search([('move_id', '=', line.id)]):
+                                if line.purchase_line_id.id == stock_incoming.purchase_line_id:
+                                    stock_move_line.write({'qty_done': quantities_done[line.product_id.id]})
+                                    residual_qty = stock_move_line.product_uom_qty - quantities_done[line.product_id.id]
+
+                                    # out_file.write('qty:%s residual_qty:%s\n'%(str(quantities_done[line.product_id.id]),str(residual_qty)))
+
+                                    ### Impostiamo stato Ricezione colli
+                                    if residual_qty == 0:
+                                        stock_incoming.write({'state': 'done', 'residual_qty': 0})
+                                    else:
+                                        stock_incoming.write({'state': 'partial', 'residual_qty': residual_qty})
+
+                                    purchase_line = self.env['purchase.order.line'].browse(line.purchase_line_id.id)
+                                    purchase_line.write({'pack_volume': stock_incoming.pack_volume / qty_done,
+                                                         'pack_weight_gross': stock_incoming.weight_gross / qty_done})
+
+                                    ### Attribuzione pesi e volumi su product_id
+                                    product = self.env['product.product'].browse(line.product_id.id)
+                                    product.write({'volume': single_volume, 'weight': single_weight,
+                                                   'weight_gross': single_gross})
+
+                                    ### Attribuzione peso e volume su assortimento product_id
+                                    assort = self.env['product.product'].browse(stock_incoming.product_id.id)
+                                    assort.write({'volume': stock_incoming.pack_volume / qty_done,
+                                                  'weight': stock_incoming.weight / qty_done,
+                                                  'weight_gross': stock_incoming.weight_gross / qty_done})
+
+            ### Conferma movimento
+            picking.action_confirm()
+            picking.action_assign()
+            res_dict = picking.button_validate()
+
+            ###Questo mi ritorna il backorder rel id
+            try:
+                wizard = self.env[(res_dict.get('res_model'))].browse(res_dict.get('res_id'))
+                wizard.process()
+                backorder_picking = self.env['stock.picking'].search([('backorder_id', '=', picking.id)])
+                stock_incomings = self.env['stock.incoming'].search([('picking_id', '=', picking.id)])
+                for inc in stock_incomings:
+                    ### Invertiamo mettendo il picking id del backorder creato in tutti i picking coinvolti
+                    inc.write({'picking_id': backorder_picking[0].id, 'backorder_id': picking.id})
+            except:
+                ###No backorder ?
+                pass
+
+        #out_file.close()
+        return
+
+
+class PurchaseOrder(models.Model):
+    _inherit = "purchase.order"
+
+    @api.multi
+    def _create_stock_moves(self, picking):
+        values = []
+        for line in self:
+            for val in line._prepare_stock_moves(picking):
+                values.append(val)
+        return self.env['stock.move'].create(values)
+
+    @api.multi
+    def _create_picking(self):
+        StockPicking = self.env['stock.picking']
+        for order in self:
+            if any([ptype in ['product', 'consu'] for ptype in order.order_line.mapped('product_id.type')]):
+                pickings = order.picking_ids.filtered(lambda x: x.state not in ('done', 'cancel'))
+                if not pickings:
+                    res = order._prepare_picking()
+                    picking = StockPicking.create(res)
+                else:
+                    picking = pickings[0]
+                moves = order.order_line._create_stock_moves(picking)
+                moves = moves.filtered(lambda x: x.state not in ('done', 'cancel'))._action_confirm()
+                seq = 0
+                for move in sorted(moves, key=lambda move: move.date_expected):
+                    seq += 5
+                    move.sequence = seq
+                moves._action_assign()
+                picking.message_post_with_view('mail.message_origin_link',
+                                               values={'self': picking, 'origin': order},
+                                               subtype_id=self.env.ref('mail.mt_note').id)
+                ###Stock Advance Management
+                for oline in order.order_line:
+                    # link = ''
+                    # if oline.product_id.is_kit:
+                    # link = moves
+                    # else:
+                    # link = ''
+                    incoming_id = self.env['stock.incoming'].create({
+                        # 'stock_line_ids':link,
+                        'incoming_qty': oline.product_qty,
+                        'residual_qty': oline.product_qty,
+                        'barcode': oline.product_id.barcode,
+                        'name': oline.product_id.name,
+                        'product_id': oline.product_id.id,
+                        'order_id': order.id,
+                        'picking_id': picking.id,
+                        'picking_type_id': picking.picking_type_id.id,
+                        'location_id': picking.location_id.id,
+                        'location_dest_id': picking.location_dest_id.id,
+                        'purchase_line_id': oline.id,
+                        'order_name': order.name,
+                        'picking_name': picking.name,
+                        'state': 'waiting',
+                    })
+                ###
+        return True
+
+
+class Picking(models.Model):
+    _inherit = "stock.picking"
+
+    order_line_ids = fields.Many2many('purchase.order.line', compute='_compute_order_lines', string='Order Lines')
+    pairs_total = fields.Char('Pairs (Sz.)', compute='_compute_pairs_total')  # Aggiungere compute
+    packs_total = fields.Integer('Pairs', compute='_compute_packs_total')  # Aggiungere compute
+
+    @api.one
+    def _compute_order_lines(self):
+        origin = self.origin
+        origin_ids = self.env['purchase.order'].search([['name', '=', origin]])
+        for order in origin_ids:
+            if order:
+                order_lines = set()
+                res_ids = self.env['purchase.order.line'].search([['order_id', '=', order.id]])
+                for o in res_ids:
+                    order_lines.add(o.id)
+
+            self.order_line_ids = list(order_lines)
+
+    @api.one
+    def _compute_pairs_total(self):
+        origin = self.origin
+        origin_ids = self.env['purchase.order'].search([['name', '=', origin]])
+        for order in origin_ids:
+            if order:
+                self.pairs_total = order.pairs_total
+
+    @api.one
+    def _compute_packs_total(self):
+        origin = self.origin
+        origin_ids = self.env['purchase.order'].search([['name', '=', origin]])
+        for order in origin_ids:
+            if order:
+                self.packs_total = order.packs_total
+
+    @api.multi
+    def action_cancel(self):
+        self.mapped('move_lines')._action_cancel()
+        self.write({'is_locked': True})
+        ### Sistemiamo anche Stock incoming
+        incoming_ids = self.env['stock.incoming'].search([('picking_id', '=', self.id)])
+        for inc in incoming_ids:
+            incoming = self.env['stock.incoming'].browse(inc.id)
+            incoming.write({'state': 'cancel'})
+
+        return True

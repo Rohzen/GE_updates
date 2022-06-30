@@ -1,0 +1,9 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_stock_manifacturing_user,product.manifacturing,model_product_manifacturing,base.group_user,1,1,1,1
+access_stock_sizes_user,product.sizes,model_product_sizes,base.group_user,1,1,1,1
+access_stock_externalcodes_user,product.externalcodes,model_product_externalcodes,base.group_user,1,1,1,1
+access_stock_material_user,product.material,model_product_material,base.group_user,1,1,1,1
+access_stock_assortment_user,product.assortment,model_product_assortment,base.group_user,1,1,1,1
+access_stock_assortmentline_user,product.assortment.line,model_product_assortment_line,base.group_user,1,1,1,1
+access_stock_incoming_user,stock.incoming,model_stock_incoming,base.group_user,1,1,1,1
+access_stock_owner_user,stock.owner,model_stock_owner,base.group_user,1,1,1,1

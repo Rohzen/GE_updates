@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <menuitem icon="fa-truck" id="menu_stock_mgmt" name="Gestione items" sequence="10" web_icon="stock_mgmt,static/description/shoe.png"/>
+        <record id="product_assortment_tree_view" model="ir.ui.view">
+            <field name="name">product.assortment.tree</field>
+            <field name="model">product.product</field>
+            <field eval="7" name="priority"/>
+            <field name="arch" type="xml">
+                <tree string="Product Variants">
+                    <field name="default_code"/>
+                    <field name="name"/>
+                    <!-- <field name="attribute_value_ids" widget="many2many_tags" groups="product.group_product_variant"/> -->
+                    <field name="lst_price"/>
+                    <field name="standard_price"/>
+                    <field name="type" invisible="1"/>
+                    <field name="price" invisible="not context.get('pricelist',False)"/>
+                    <field name="uom_id" options="{'no_open': True, 'no_create': True}" groups="uom.group_uom"/>
+                    <field name="barcode"/>
+                    <field name="product_tmpl_id" invisible="1"/>
+                    <field name="active" invisible="1"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="product_assortment_kanban_view" model="ir.ui.view">
+            <field name="name">Product Assortment Kanban</field>
+            <field name="model">product.product</field>
+            <field name="arch" type="xml">
+                <kanban>
+                    <field name="id"/>
+                    <field name="image_small"/>
+                    <field name="lst_price"/>
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div class="oe_kanban_global_click">
+                                <div class="o_kanban_image">
+                                    <img t-att-src="kanban_image('product.product', 'image_small', record.id.raw_value)" alt="Product"/>
+                                </div>
+                                <div class="oe_kanban_details">
+                                    <small t-if="record.default_code.value">[<field name="default_code"/>]</small>
+                                    <strong class="o_kanban_record_title"><field name="name"/></strong>
+                                    <div class="o_kanban_tags_section">
+                                        <field name="attribute_value_ids" groups="product.group_product_variant"/>
+                                    </div>
+                                    <div>
+                                        <a t-if="record.product_brand_id" type="action" name="585">
+                                          <field name="product_brand_id"/>
+                                        </a>
+                                    </div>
+                                    <ul>
+                                    </ul>
+                                    <div name="tags"/>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <record id="product_custom_search_form_view" model="ir.ui.view">
+            <field name="name">product.product.search</field>
+            <field name="model">product.product</field>
+<!--             <field name="mode">primary</field>
+            <field name="inherit_id" ref="product.product_template_search_view"/>  -->
+            <field name="arch" type="xml">
+                <search string="Product">
+                    <field name="name" string="Product" filter_domain="['|', '|', ('product_variant_ids.default_code', 'ilike', self),('name', 'ilike', self), ('barcode', 'ilike', self)]"/>
+                    <field name="categ_id" filter_domain="[('categ_id', 'child_of', raw_value)]"/>
+                    <group expand="1" string="Group By">
+                        <filter string="Product Category" name="Category" context="{'group_by':'categ_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+    <record id="product_custom_action_sell" model="ir.actions.act_window">
+        <field name="name">Product Variants</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">product.product</field>
+        <field name="view_mode">kanban,tree,form,activity</field>
+        <field name="view_type">form</field>
+        <field name="context">{'search_default_filter_to_sell':1,'search_default_Category':1}</field>
+        <field name="view_id" ref="product_assortment_kanban_view"/>
+        <field name="search_view_id" ref="product_custom_search_form_view"/>
+        <field name="help" type="html">
+          <p class="o_view_nocontent_smiling_face">
+            Create a new product variant
+          </p><p>
+            You must define a product for everything you sell, whether it's a physical product,
+            a consumable or a service you offer to customers.
+            The product form contains information to simplify the sale process:
+            price, notes in the quotation, accounting data, procurement methods, etc.
+          </p>
+        </field>
+    </record>
+
+    <menuitem id="assortimenti_menu" name="Products" action="product.product_template_action" sequence="20" parent="menu_stock_mgmt"/>
+    <menuitem id="assortimenti_menu_child" name="Products" action="product.product_template_action" sequence="10" parent="assortimenti_menu"/>
+    <menuitem id="assortimenti_menu_products" action="product_custom_action_sell" parent="assortimenti_menu" groups="product.group_product_variant" sequence="20" active="True"/>
+    <menuitem id="assortimenti_menu_product_pricelist_main" name="Pricelists" parent="assortimenti_menu" action="product.product_pricelist_action2" groups="product.group_sale_pricelist" sequence="30" active="True"/>
+
+    <record id="product_assortment_action_sell" model="ir.actions.act_window">
+        <field name="name">Assortimenti</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">product.product</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="view_type">form</field>
+        <field name="domain">[('is_kit','=', True)]</field>
+        <field name="view_id" ref="product_assortment_kanban_view"/>
+        <field name="search_view_id" ref="product_custom_search_form_view"/>
+        <field name="help" type="html">
+          <p class="o_view_nocontent_smiling_face">
+            Create a new product variant
+          </p><p>
+            You must define a product for everything you sell, whether it's a physical product,
+            a consumable or a service you offer to customers.
+            The product form contains information to simplify the sale process:
+            price, notes in the quotation, accounting data, procurement methods, etc.
+          </p>
+        </field>
+    </record>
+
+    <menuitem id="assortimenti_view_menu_products" action="product_assortment_action_sell" parent="assortimenti_menu" groups="product.group_product_variant" sequence="28" active="True"/>
+
+        <record id="stock_assortment_tree" model="ir.ui.view">
+            <field name="name">product.assortment.tree</field>
+            <field name="model">product.assortment</field>
+            <field name="arch" type="xml">
+              <tree string="Assortments" editable="top">
+                <field name="code"/>
+                <field name="name"/>
+              </tree>
+        </field>
+        </record>
+
+    <record id="assortment_type_action" model="ir.actions.act_window">
+        <field name="name">Tipo assortimenti</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">product.assortment</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_type">form</field>
+        <field name="view_id" ref="stock_assortment_tree"/>
+    </record>
+
+    <menuitem id="assortimenti_tipo_menu_products" action="assortment_type_action" parent="assortimenti_menu" groups="product.group_product_variant" sequence="25" active="True"/>
+
+<!-- WIZARD CREAZIONE ARTICOLI/ASSORTIMENTI -->
+
+        <record id="wizard_assortment_form" model="ir.ui.view">
+            <field name="name">wizard.assortment.form</field>
+            <field name="model">wizard.assortment</field>
+            <field name="arch" type="xml">
+              <form string="Assortments">
+              <header>
+                <!-- <button name="create_pset" type="object" string="CREA ASSORTIMENTO" confirm="Create a new set ?" class="oe_highlight"/> -->
+              </header>
+                <group>
+                    <!-- <field name="product_id" domain="[('name', '=ilike', '[00]'), ('is_kit', '=', 'False')]"/> -->
+                    <field name="product_id"/>
+                    <!-- <field name="code"/> -->
+                </group>
+                <group>
+                    <field name="assortment_id"/>
+                    <!-- <field name="name"/> -->
+                    <field name="range_start" string="Start range"/>
+                    <field name="range_end" string="End range"/>
+                </group>
+                 <group>
+                    <field name="pairs_size" />
+                    <field name="pairs_total" />
+                    <field name="image" widget="image" style="width:144px;height:144px"/>
+                </group>
+                <footer>
+                    <button name="create_pset" type="object" string="CREA ASSORTIMENTO" confirm="Create a new set?" class="oe_highlight"/>
+                    or
+                    <button string="Cancel" class="oe_link" special="cancel"/>
+                </footer>
+              </form>
+        </field>
+        </record>
+
+        <record id="wizard_creazione_articoli_action" model="ir.actions.act_window">
+            <field name="name">Crea item assortiti</field>
+            <field name="res_model">wizard.assortment</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="view_id" ref="wizard_assortment_form"/>
+        </record>
+        <menuitem id="menuitem_wizard_creazione_articoli_action" name="Crea assortimento" action="wizard_creazione_articoli_action" sequence="30" parent="menu_stock_mgmt"/>
+
+</odoo>

@@ -1,0 +1,119 @@
+<?xml version="1.0"?>
+<odoo>
+    <data>
+    
+<!--         <record id="action_open_wizard" model="ir.actions.act_window">
+            <field name="name">View Product Wizard</field>
+            <field name="res_model">product.wizard</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_test_report_wizard"/>
+            <field name="target">new</field>
+        </record>
+
+        <record id="view_test_report_wizard" model="ir.ui.view">
+        <field name="name">Product Wizard</field>
+        <field name="model">product.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Choose The Details">
+                <group>
+                    <group>
+                        <field name="range_start" string="Range start from:"/>
+                        <field name="range_end" string="Range end:"/>
+                        <field name="range_dist" string="Size distribution:" placeholder="Es.: 1-1-2-2-2-2"/>
+                    </group>
+                </group>
+                <footer>
+                    <button name="create_set" string="Print" type="object" class="oe_highlight" />
+                    or
+                    <button string="Cancel" class="oe_link" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>  -->
+    
+        <record id="view_order_form_inherit_purchase_stock_mgmt" model="ir.ui.view">
+            <field name="name">purchase.order.form.sale.mgmt</field>
+            <field name="model">purchase.order</field>
+            <field name="inherit_id" ref="purchase.purchase_order_form"/>
+            <field name="arch" type="xml">
+                 <xpath expr="//field[@name='order_line']/tree" position="attributes">
+                    <attribute name="editable">bottom</attribute>
+                </xpath>
+
+                 <xpath expr="//page/field[@name='order_line']/tree/field[@name='name']" position="attributes">
+                    <!--<attribute name="invisible">1</attribute>-->
+                </xpath>
+
+                 <xpath expr="//page/field[@name='order_line']/tree/field[@name='product_id']" position="attributes">
+                    <attribute name="domain">"[('is_base', '=', False)]"</attribute>
+                </xpath>
+                
+<!--                 <xpath expr="//page/field[@name='order_line']/tree/field[@name='product_qty']" position="attributes">
+                    <attribute name="string">Colli</attribute>
+                </xpath> -->
+
+                <xpath expr="//page/field[@name='order_line']/tree/field[@name='product_uom']" position="attributes">
+                    <attribute name="string">U.M.</attribute>
+                </xpath>
+
+<!--                 <xpath expr="//page/field[@name='order_line']/tree/field[@name='pairs_total']" position="attributes">
+                    <attribute name="string">Quantità</attribute>
+                </xpath> -->
+
+                 <xpath expr="//page/field[@name='order_line']/tree/field[@name='date_planned']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+
+                 <xpath expr="//field[@name='date_order']" position="after">
+                    <field name="change"/>
+                </xpath>
+                <!-- <xpath expr="//field[@name='product_id']" position="attributes">
+                    <attribute name="domain">[('is_kit','=',True)]</attribute>
+                </xpath> -->
+                
+                 <xpath expr="//field[@name='product_id']" position="after">
+                    <field name="external_code" string="Ext.code"/>
+                </xpath>
+                
+                
+                <xpath expr="//page/field[@name='order_line']/form//field[@name='product_qty']" position="after">
+                    <group>
+                            <field name="range_start" invisible="0" string="Tg da:"/>
+                            <field name="range_end" invisible="0" string="Tg. a:"/>
+                            <field name="assortment_id" invisible="0" string="Assortment" placeholder="Es.: 1-1-2-2-2-2"/>
+                            <!-- <field name="range_dist" invisible="0" string="Distribuzione tg." placeholder="Es.: 1-1-2-2-2-2"/> -->
+                    </group>
+                </xpath>
+                
+                <xpath expr="//page/field[@name='order_line']/tree/field[@name='product_qty']" position="after">
+                    <field name="range_start" invisible="0" string="Tg da:"/>
+                    <field name="range_end" invisible="0" string="Tg. a:"/>
+                    <field name="assortment_id" invisible="0" string="Assortment" placeholder="Es.: 1-1-2-2-2-2"/>
+                    <!-- <field name="range_dist" invisible="0" string="Distribuzione tg." placeholder="Es.: 1-1-2-2-2-2"/> -->
+                    <!-- <button name="create_pset" string="+" type="object" class="oe_highlight" confirm="Create a new set ?"/> -->
+                </xpath>
+                
+                 <xpath expr="//page/field[@name='order_line']/form//field[@name='product_uom']" position="after">
+                     <group>
+                        <field name="pairs_size" />
+                        <field name="pairs_in_pack" />
+                        <field name="pairs_total" />
+                    </group>
+                </xpath>
+                 <xpath expr="//page/field[@name='order_line']/tree//field[@name='product_uom']" position="after">
+                    <field name="pairs_size" />
+                    <field name="pairs_in_pack" />
+                    <field name="pairs_total"/>
+                    <!-- <field name="pairs_total" string="Quantità"/> -->
+                </xpath>
+
+                 <xpath expr="//field[@name='amount_total']" position="after">
+                    <field name="packs_total"/>
+                    <field name="pairs_total"/>
+                </xpath>
+           </field>
+        </record>
+
+    </data>
+</odoo>

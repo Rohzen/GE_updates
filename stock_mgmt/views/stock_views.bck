@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+        <record id="stock_move_treeview_custom" model="ir.ui.view">
+            <field name="name">stock.move.inherited_tree</field>
+            <field name="model">stock.move</field>
+            <field name="inherit_id" ref="stock.view_move_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='location_dest_id']" position="after">
+                    <field name="invoiced"/>
+                    <field name="to_invoice"/>
+                 </xpath>
+            </field>
+        </record>
+
+    <record id="stock_move_treeview_custom_action" model="ir.actions.act_window">
+        <field name="name">Magazzino conto vendita</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">stock.move</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_type">form</field>
+        <field name="view_id" ref="stock_move_treeview_custom"/>
+       <!--  <field name="search_view_id" ref="product_custom_search_form_view"/> -->
+    </record>
+
+    <menuitem id="stock_move_treeview_custom_menu" action="stock_move_treeview_custom_action" parent="stock.menu_stock_root" groups="stock.group_stock_manager" sequence="20" active="True"/>
+
+        <record id="stock_view_picking_form_custom"
+                model="ir.ui.view">
+            <field name="name">
+                stock.view_picking_form.custom
+            </field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id"
+                   ref="stock.view_picking_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//notebook[last()]" position="inside">
+                        <page string="Incoming Order lines">
+                            <field name="order_line_ids" string="">
+                                <tree string="Order lines" editable="bottom">
+                                        <field name="product_uom_qty"/>
+                                        <field name="product_uom" string="U.M."/>
+                                        <field name="name" string="Assortimento"/>
+                                        <field name="pack_weight_gross" />
+                                        <field name="pack_volume" />
+                                        <field name="pairs_size" />
+                                        <field name="pairs_total" />
+                                        <field name="material_id" />
+                                </tree>
+                                <form string="Order lines">
+                                    <group>
+                                        <field name="product_uom_qty"/>
+                                        <field name="product_uom" string="U.M."/>
+                                        <field name="name" string="Assortimento"/>
+                                        <field name="pack_weight_gross" />
+                                        <field name="pack_volume" />
+                                        <field name="pairs_size" />
+                                        <field name="pairs_total" />
+                                        <field name="material_id" />
+                                    </group>
+                                </form>
+                            </field>
+                    </page>
+                 </xpath>
+
+            </field>
+        </record>
+
+      <record id="stock_incoming_custom_tree" model="ir.ui.view">
+        <field name="name">stock.incoming.tree.custom</field>
+        <field name="model">stock.incoming</field>
+        <field name="arch" type="xml">
+          <tree editable="top" decoration-info="state == 'draft'" decoration-muted="state == 'cancel'" decoration-danger="state not in ('cancel', 'done')">
+            <field name="incoming_qty" invisible="0"/>
+            <field name="barcode" invisible="0"/>
+            <field name="name" invisible="0"/>
+            <field name="product_id" invisible="0"/>
+            <field name="order_id" invisible="1"/>
+            <field name="picking_id" invisible="1"/>
+            <field name="picking_type_id" invisible="0"/>
+            <field name="location_id" invisible="0"/>
+            <field name="location_dest_id" invisible="0"/>
+            <field name="order_name" invisible="0" readonly="1"/>
+            <field name="picking_name" invisible="0" readonly="1"/>
+            <field name="weight_gross" invisible="0"/>
+            <field name="weight" invisible="0"/>
+            <field name="pack_volume" invisible="0"/>
+            <field name="state" invisible="0" readonly="1"/>
+          </tree>
+        </field>
+      </record>
+
+
+        <record id="stock_incoming_search_view" model="ir.ui.view">
+            <field name="name">stock.incoming.search</field>
+            <field name="model">stock.incoming</field>
+            <field name="arch" type="xml">
+                <search string="Stock Moves">
+                    <field name="barcode" string="Barcode" filter_domain="['|', '|', ('product_id.external_codes.name', 'ilike', self),('name', 'ilike', self), ('barcode', 'ilike', self)]"/>
+                    <!-- <field name="barcode" /> -->
+                    <field name="name" />
+                    <field name="order_name" invisible="0"/>
+                    <field name="picking_name" invisible="0"/>
+                    <group expand="0" string="Group By">
+                        <filter string="Product" name="by_order" domain="[]" context="{'group_by':'order_id'}"/>
+                   </group>
+                </search>
+            </field>
+        </record>
+
+     <record id="action_stock_incoming_custom1" model="ir.actions.act_window">
+        <field name="name">Ricezione colli</field>
+        <field name="res_model">stock.incoming</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_type">form</field>
+        <field name="view_id" ref="stock_incoming_custom_tree"/>
+        <!-- <field name="search_view_id" ref="stock_incoming_search_view"/> -->
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+          <p class="oe_view_nocontent_create">
+            Ricezione colli
+          </p>
+        </field>
+  </record>
+
+  <menuitem
+    action="action_stock_incoming_custom1"
+    id="menu_stock_incoming_custom"
+    parent="stock.menu_stock_warehouse_mgmt" sequence="1"/>
+
+    ### Azione conferma
+
+    <!-- azione di conferma to batch -->
+    <record id="products_incoming_form" model="ir.ui.view">
+        <field name="name">stock.incoming.confirm.form</field>
+        <field name="model">stock.incoming.confirm</field>
+        <field name="arch" type="xml">
+            <form string="Conferma ricezione colli">
+                <footer>
+                    <button name="confirm_req" type="object" string="Conferma ricezione colli" class="btn-primary"/>
+                    <!--      <button name="confirm_req_all" type="object" string="Conferma tutto" class="btn-primary"/> -->
+                    <button name="check_stock_sales" type="object" string="Aggiorna conto vendita" class="btn-primary"/> 
+                    <button string="Cancel" class="btn-default" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!--  add picking to batch action -->
+    <record id="products_confirmation_request_action" model="ir.actions.act_window">
+        <field name="name">Action confirmation</field>
+        <field name="res_model">stock.incoming.confirm</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="products_incoming_form"/>
+        <field name="target">new</field>
+    </record>
+
+    <act_window name="Conferma ricezione colli"
+        res_model="stock.incoming.confirm"
+        src_model="stock.incoming"
+        view_mode="form"
+        target="new"
+        key2="client_action_multi" 
+        id="act_stock_pro_confirm"
+        multi="True"/> 
+
+</odoo>

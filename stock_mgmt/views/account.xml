@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+      <record id="invoice_form_mod" model="ir.ui.view">
+        <field name="name">account.invoice.custmod.form</field>
+        <field name="model">account.invoice</field>
+        <field name="inherit_id" ref="account.invoice_form"/>
+        <field name="arch" type="xml">
+                 <xpath expr="//page/field[@name='invoice_line_ids']/tree//field[@name='product_id']" position="after">
+                    <field name="external_code" string="Ext.code"/>
+                </xpath>
+          <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='quantity']" position="before">
+                    <field name="assortment_id" invisible="1" string="Assortment" placeholder="Es.: 1-1-2-2-2-2"/>
+                    <field name="range_start" invisible="1" string="Tg da:"/>
+                    <field name="range_end" invisible="1" string="Tg. a:"/>
+          </xpath>
+          <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='quantity']" position="after">
+                    <field name="pairs_size" invisible="1"/>
+                    <field name="pairs_in_pack" invisible="1"/>
+                    <field name="pairs_total" invisible="0"/>
+          </xpath>
+         <xpath expr="//field[@name='partner_id']" position="after">
+            <field name="dest_partner_id" string="Destinazione" attrs="{'invisible': [('journal_id','!=',15)]}"/>
+        </xpath>
+        <field name="date_invoice" position="attributes">
+                <attribute name="string" attrs="{'invisible': [('journal_id','!=',15)]}">Data movimento</attribute>
+        </field>
+        <field name="partner_shipping_id" position="attributes">
+                <attribute name="attrs">{'invisible': [('journal_id','=',15)]}</attribute>
+        </field>
+        <field name="payment_term_id" position="attributes">
+                <attribute name="attrs">{'invisible': [('journal_id','=',15)]}</attribute>
+        </field>
+<!--         <field name="paypal_chk" position="attributes">
+                <attribute name="attrs">{'invisible': [('journal_id','=',15)]}</attribute>
+        </field> -->
+        <field name="cash_rounding_id" position="attributes">
+                <attribute name="attrs">{'invisible': [('journal_id','=',15)]}</attribute>
+        </field>
+        <field name="date_due" position="attributes">
+                <attribute name="attrs">{'invisible': [('journal_id','=',15)]}</attribute>
+        </field>
+         <xpath expr="//field[@name='amount_total']" position="after">
+            <field name="pairs_total"/>
+        </xpath>
+        </field>
+      </record>
+
+        <record id="account_invoice_moven_tree" model="ir.ui.view">
+            <field name="name">account.invoice.moven.tree</field>
+            <field name="model">account.invoice</field>
+            <field name="arch" type="xml">
+                <tree decoration-info="state == 'draft'" decoration-muted="state == 'cancel'" string="Invoice">
+                    <field name="partner_id" groups="base.group_user" string="Customer"/>
+                    <field name="date_invoice"/>
+                    <field name="number"/>
+                    <field name="commercial_partner_id" invisible="1"/>
+                    <field name="reference" invisible="1"/>
+                    <field name="name" invisible="1"/>
+                    <field name="journal_id" invisible="1"/>
+                    <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
+                    <field name="user_id"/>
+                    <field name="date_due"/>
+                    <field name="origin"/>
+                    <field name="amount_untaxed_invoice_signed" string="Tax Excluded" sum="Total"/>
+                    <field name="amount_tax_signed" string="Tax" sum="Total"/>
+                    <field name="amount_total_signed" string="Total" sum="Total"/>
+                    <field name="residual_signed" string="Amount Due" sum="Amount Due"/>
+                    <field name="currency_id" invisible="1"/>
+                    <field name="company_currency_id" invisible="1"/>
+                    <field name="state"/>
+                    <field name="type" invisible="context.get('type',True)"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_moven_search" model="ir.ui.view">
+            <field name="name">account.moven.select</field>
+            <field name="model">account.invoice</field>
+            <field name="arch" type="xml">
+                <search string="Search Invoice">
+                    <field name="number" string="Invoice" filter_domain="['|','|','|', ('number','ilike',self), ('origin','ilike',self), ('reference', 'ilike', self), ('partner_id', 'child_of', self)]"/>
+                    <filter domain="[('user_id','=',uid)]" name="myinvoices" help="My Invoices"/>
+                    <separator/>
+                    <filter name="draft" string="Draft" domain="[('state','=','draft')]"/>
+                    <separator/>
+                    <field name="partner_id" operator="child_of"/>
+                    <field name="user_id" string="Salesperson" domain="[('share','=', False)]"/>
+                    <field name="date" string="Period"/>
+               </search>
+            </field>
+        </record>
+
+    <record id="account_invoice_moven_action" model="ir.actions.act_window">
+        <field name="name">Movimentazioni aggiuntive</field>
+        <field name="res_model">account.invoice</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_type">form</field>
+        <field eval="False" name="view_id"/>
+        <field name="domain">[('journal_id','=',15),('type','=','out_invoice')]</field>
+        <field name="context">{'default_journal_id': 15,'default_type': 'out_invoice','type':'out_invoice'}</field>
+        <field name="search_view_id" ref="view_moven_search"/>
+        <field name="help" type="html">
+          <p class="o_view_nocontent_smiling_face">
+            Create an additional movement
+          </p>
+        </field>
+    </record>
+
+    
+<!--         server action opening the vendor bills and returning the right help tooltip -->
+   
+<!--     <record id="action_invoice_moven_tree" model="ir.actions.server">
+        <field name="name">Moven tree</field>
+        <field name="model_id" ref="model_account_invoice"/>
+        <field name="state">code</field>
+        <field name="code">
+        action_values = env.ref('stock_mgmt.action_vendor_bill_template').read()[0]
+        action = action_values
+        </field>
+    </record> -->
+
+    <record id="action_moven_tree_view" model="ir.actions.act_window.view">
+        <field eval="1" name="sequence"/>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="account_invoice_moven_tree"/>
+        <field name="act_window_id" ref="account_invoice_moven_action"/>
+    </record>
+
+    <record id="action_moven_form_view" model="ir.actions.act_window.view">
+        <field eval="2" name="sequence"/>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="invoice_form_mod"/>
+        <field name="act_window_id" ref="account_invoice_moven_action"/>
+    </record>
+
+    <menuitem id="account_invoice_moven_action_menu" action="account_invoice_moven_action" parent="stock_move_treeview_custom_menu" groups="stock.group_stock_manager" sequence="23" active="True"/>
+
+</odoo>

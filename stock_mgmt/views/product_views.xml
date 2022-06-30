@@ -1,0 +1,150 @@
+<?xml version="1.0"?>
+<odoo>
+    <data>
+
+        <record id="product_template_stock_mgmt" model="ir.ui.view">
+            <field name="name">product.template.mgmt</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_only_form_view"/>
+            <field name="arch" type="xml">
+                 <xpath expr="//field[@name='default_code']" position="attributes">
+                    <attribute name="required">0</attribute>
+                </xpath>
+                <xpath expr="//field[@name='weight']" position="after">
+                    <label for="weight_gross" string="Gross weight"/>
+                    <field name="weight_gross"/>
+                </xpath>
+                <xpath expr="//field[@name='weight_gross']" position="after">
+                    <label for="pack_volume" string="Pack volume"/>
+                    <field name="pack_volume"/>
+                </xpath>
+                <xpath expr="//field[@name='sale_ok']" position="before">
+                <group>
+                    <field name="manifacturing_id"  string="Manifacture type"/>
+                    <!-- <field name="collection_id"  string="Collection/Season"/> -->
+                    <!-- <field name="size_id"  string="Size"/> -->
+                    <field name="material_id" string="Packaging"/>
+                </group>
+                        <div>
+                            <field name="is_kit"/>
+                            <label for="is_kit"/>
+                        </div>
+                </xpath>
+                  <xpath expr="//notebook[last()]" position="inside">
+                        <page string="External codes">
+                            <group>
+                                    <field name="range_start" string="range_start"/>
+                                    <field name="range_end" string="range_end"/>
+                                    <field name="assortment_id" string="assortment_id"/>
+
+                                    <field name="external_codes" string="">
+                                        <tree string="External codes" editable="bottom">
+                                                 <field name="partner_id" string="Partner"/>
+                                                 <field name="name" string="Codice/Barcode"/>
+                                        </tree>
+                                        <form string="External codes">
+                                            <group>
+                                                 <field name="partner_id" string="Partner"/>
+                                                 <field name="name" string="Codice/Barcode"/>
+                                            </group>
+                                        </form>
+                                    </field>
+                            </group>
+                    </page>
+                 </xpath>
+                  <xpath expr="//notebook/page[1]" position="before">
+                    <page string="Size composition">
+                            <group>
+                                <field name="bom_id"  string="Codice composizione Kit"/>
+                                    <field name="bom_line_ids" string="">
+                                        <tree string="Pack composition" editable="bottom">
+                                                 <field name="product_qty"  string="Quantity"/>
+                                                 <field name="product_id" string="Product"/>
+                                        </tree>
+                                        <form string="Pack composition">
+                                            <group>
+                                                 <field name="product_qty"  string="Quantity"/>
+                                                 <field name="product_id" string="Product"/>
+                                            </group>
+                                        </form>
+                                    </field>
+                            </group>
+                    </page>
+                 </xpath>
+           </field>
+        </record>
+
+        <record id="product_product_stock_mgmt" model="ir.ui.view">
+            <field name="name">product.product.mgmt</field>
+            <field name="model">product.product</field>
+            <field name="inherit_id" ref="product.product_normal_form_view"/>
+            <field name="arch" type="xml">
+                 <xpath expr="//field[@name='default_code']" position="attributes">
+                    <attribute name="required">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='weight']" position="after">
+                        <label for="weight_gross" string="Gross weight"/>
+                        <field name="weight_gross"/>
+                 </xpath>
+                <xpath expr="//field[@name='sale_ok']" position="before">
+                <group>
+                    <field name="manifacturing_id"  string="Manifacture type"/>
+                    <!-- <field name="collection_id"  string="Collection/Season"/> -->
+                    <!-- <field name="size_id"  string="Size"/> -->
+                    <field name="material_id" string="Packaging"/>
+                </group>
+                        <div>
+                            <field name="is_kit"/>
+                            <label for="is_kit"/>
+                        </div>
+                        <div>
+                            <field name="is_base"/>
+                            <label for="is_base"/>
+                        </div>
+                </xpath>
+                  <xpath expr="//notebook[last()]" position="inside">
+                        <page string="External codes">
+                            <group>
+                                    <field name="range_start" string="range_start"/>
+                                    <field name="range_end" string="range_end"/>
+                                    <field name="assortment_id" string="assortment_id"/>
+
+                                    <field name="external_codes" string="">
+                                        <tree string="External codes" editable="bottom">
+                                                 <field name="partner_id" string="Partner"/>
+                                                 <field name="name" string="Codice/Barcode"/>
+                                        </tree>
+                                        <form string="External codes">
+                                            <group>
+                                                 <field name="partner_id" string="Partner"/>
+                                                 <field name="name" string="Codice/Barcode"/>
+                                            </group>
+                                        </form>
+                                    </field>
+                            </group>
+                    </page>
+                 </xpath>
+                  <xpath expr="//notebook/page[1]" position="before">
+                    <page string="Size composition">
+                            <group>
+                                <field name="bom_id"  string="Codice composizione Kit"/>
+                                    <field name="bom_line_ids" string="">
+                                        <tree string="Pack composition" editable="bottom">
+                                                 <field name="product_qty"  string="Quantity"/>
+                                                 <field name="product_id" string="Product"/>
+                                        </tree>
+                                        <form string="Pack composition">
+                                            <group>
+                                                 <field name="product_qty"  string="Quantity"/>
+                                                 <field name="product_id" string="Product"/>
+                                            </group>
+                                        </form>
+                                    </field>
+                            </group>
+                    </page>
+                 </xpath>
+           </field>
+        </record>
+
+    </data>
+</odoo>

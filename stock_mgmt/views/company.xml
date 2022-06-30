@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+        <record id="view_company_form_stock_mgmt" model="ir.ui.view">
+            <field name="name">res.company.form.sale.mgmt</field>
+            <field name="model">res.company</field>
+            <field name="inherit_id" ref="base.view_company_form"/>
+            <field name="arch" type="xml">
+                 <xpath expr="//field[@name='nomenclature_id']" position="after">
+                    <button name="reset_db" string="Reset db products (For test only)" type="object" class="oe_highlight" confirm="ATTENTION:Are you sure to delete products, sale, purchase and stock ?"/>
+                </xpath>
+           </field>
+        </record>
+</odoo>
+

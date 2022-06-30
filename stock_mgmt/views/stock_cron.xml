@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Cron to synchronize stocks -->
+    <record id="stock_sync_cron" model="ir.cron">
+      <field name="name">Stock update</field>
+      <field name="model_id" ref="stock_mgmt.model_stock_owner_confirm"/>
+      <field name="state">code</field>
+      <field name="code">model.write_sales_owner()</field>
+      <field name="user_id" ref="base.user_root"/>
+      <field name="interval_number">30</field>
+      <field name="interval_type">minutes</field>
+      <field name="numbercall">-1</field>
+      <field name="doall" eval="True"/>
+    </record>
+
+</odoo>

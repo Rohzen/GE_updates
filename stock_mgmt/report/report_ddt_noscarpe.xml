@@ -1,0 +1,539 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <!-- Copyright 2018 Simone Rubino - Agile Business Group
+     License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl). -->
+    <odoo>
+        <record id="paperformat_ddt" model="report.paperformat">
+            <field name="name">Purchase order</field>
+            <field name="default" eval="True"/>
+            <field name="format">A4</field>
+            <field name="page_height">0</field>
+            <field name="page_width">0</field>
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">5</field>
+            <field name="margin_bottom">0</field>
+            <field name="margin_left">5</field>
+            <field name="margin_right">5</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">0</field>
+            <field name="dpi">80</field>
+        </record>
+
+        <template id="ddt_report_external_layout">
+            <t t-if="not o" t-set="o" t-value="doc"/>
+            <t t-if="not company">
+            <!-- Multicompany -->
+                <t t-if="company_id">
+                    <t t-set="company" t-value="company_id"/>
+                </t>
+                <t t-elif="o and 'company_id' in o">
+                    <t t-set="company" t-value="o.company_id.sudo()"/>
+                </t>
+                <t t-else="else">
+                    <t t-set="company" t-value="res_company"/>
+                </t>
+                <t t-set="sale_order" t-value="sale_order.id"/>
+            </t>
+
+<!--        <t t-if="company.external_report_layout_id" t-call="{{company.external_report_layout_id.key}}"><t t-raw="0"/></t>-->
+            <t t-call="stock_mgmt.ddt_external_layout_standard"><t t-raw="0"/></t>
+        </template>
+
+    <template id="ddt_external_layout_standard">
+        <div class="header">
+            <div class="row">
+                <div class="col-3 mb4">
+                    <img t-if="company.logo" t-att-src="image_data_uri(company.logo)" style="max-height: 45px;" alt="Logo"/>
+                </div>
+                <div class="col-9 text-right" t-field="company.report_header" name="moto"/>
+            </div>
+            <div t-if="company.logo or company.report_header" class="row zero_min_height">
+                <div class="col-12">
+                    <div style="border-bottom: 1px solid black;"/>
+                </div>
+            </div>
+        </div>
+        <div class="article o_report_layout_standard"  t-att-data-oe-model="o and o._name" t-att-data-oe-id="o and o.id" t-att-data-oe-lang="o and o.env.context.get('lang')">
+            <t t-call="web.address_layout"/>
+            <t t-raw="0"/>
+        </div>
+
+        <div class="footer o_standard_footer" style="font-size:8px;">
+            <div class="text-center" style="border-top: 1px solid black; font-size: 8px;">
+                <ul class="list-inline mb4">
+                    <li t-if="company.phone" class="list-inline-item">Tel: <span t-field="company.phone"/></li>
+                    <li t-if="company.email" class="list-inline-item">Email: <span t-field="company.email"/></li>
+                    <li t-if="company.website" class="list-inline-item">Web: <span t-field="company.website"/></li>
+                    <li t-if="company.vat" class="list-inline-item"><t t-esc="(company.country_id.vat_label or 'Tax ID').replace(' ','\N{NO-BREAK SPACE}')"/>: <span t-esc="company.vat.replace(' ','\N{NO-BREAK SPACE}')"/></li>
+                </ul>
+
+                <div name="financial_infos">
+                    <span t-field="company.report_footer"/>
+                </div>
+
+                <div t-if="report_type == 'pdf'" class="text-muted">
+                    Page: <span class="page"/> / <span class="topage"/>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <template id="report_ddt_noscarpe">
+                <t t-set="sale_order" t-value="o._get_sale_order_ref()"/>
+                <t t-call="web.html_container">
+                <!-- <t t-call="web.external_layout"> -->
+                <t t-call="stock_mgmt.ddt_report_external_layout">
+                <t t-foreach="docs" t-as="o">
+                    <t t-if="o and 'company_id' in o">
+                        <t t-set="company" t-value="o.company_id.sudo()" />
+                    </t>
+                    <t t-if="not o or not 'company_id' in o">
+                        <t t-set="company" t-value="res_company" />
+                    </t>
+
+                    <style type="text/css">
+                        table,
+                        tr,
+                        td {
+                            border: 1px solid #e1e4e8;
+                        }
+
+                        td.tr0.td5,
+                        td.tr15.td1 {
+                            text-align: left;
+                            vertical-align: top;
+                            font-size: 8px;
+                        }
+
+                        table.header-table, p {
+                            text-align: center;
+                            margin: 2px !important;
+                        }
+
+                        table {
+                            font-size: 10px;
+                        }
+
+                        .header-table td {
+                            padding: 3px !important;
+                        }
+
+                        td.tr6.td0,
+                        td.tr6.td1,
+                        td.tr6.td14 {
+                            vertical-align: bottom;
+                        }
+
+                        #id1_1_2 {
+                            float: right;
+                            display: inline-block;
+                        }
+
+                        #id1_1_1 {
+                            display: inline-block;
+                        }
+                    </style>
+                    <!-- Header code start here -->
+                    <!-- <div class="header">
+                        <div class="row">
+                            <div class="col-3 mb4">
+                                <img t-if="company.logo" t-att-src="image_data_uri(company.logo)" style="max-height: 45px;" alt="Logo" />
+                            </div>
+                            <div class="col-9 text-right" style="margin-top:22px;" t-field="company.report_header" name="moto" />
+                        </div>
+                        <div t-if="company.logo or company.report_header" class="row zero_min_height">
+                            <div class="col-12">
+                                <div style="border-bottom: 1px solid black;" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-8">
+                                <strong>&#x2063;</strong>
+                                <br/>
+                                <strong t-field="company.partner_id.name" />
+                                <span t-field="company.partner_id" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;], &quot;no_marker&quot;: true}" />
+                                <h6>Transport Document Presidential Decree 14/08/96 N. 472 Art. 1 .c.3)</h6>
+                            </div>
+                            <div class="col-4">
+                                <strong style='color:red;'>Billing address</strong>
+                                <br/>
+                                <span>Recipient/DDT Header Dear</span>
+                                <strong t-field="sale_order.partner_invoice_id.name" />
+                                <span style='font-family:sans-serif;font-style: normal;' t-field="sale_order.partner_invoice_id" t-options='{"widget": "contact", "fields": ["address",], "no_marker": True}' />
+                                <span t-field="sale_order.partner_invoice_id.pec_mail" />
+                                <br/>
+                                <span t-field="sale_order.partner_invoice_id.codice_destinatario" />
+                            </div>
+                        </div>
+                    </div> -->
+                    <!-- Header code end here -->
+
+
+                    <!-- Body code start here -->
+                    <div class="row zero_min_height" style="font-size: 12px; padding-top: -175px;">
+                        <div class="col-6" name="company_address">
+                            <div t-field="company.partner_id"
+                            t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": true}'
+                            />
+                            <div><span t-field="company.partner_id.pec_mail"/></div>
+                            <div style="font-style:bold;">Cod.SDI <span t-field="company.partner_id.codice_destinatario"></span> </div>
+                        </div>
+                    <div class="col-6">
+                        <strong style='color:gray;'>Indirizzo fatturazione</strong><p style="font-size: 8px; text-align:left;">Billing address</p>
+                        <!--<br/>
+                        <span>A: </span>-->
+                        <strong t-field="o.partner_id.name" />
+                        <span style='font-family:sans-serif;font-style: small;' t-field="o.partner_id" t-options='{"widget": "contact", "fields": ["address", "phone"], "no_marker": True, "phone_icons": True}' />
+                        <span t-field="o.partner_id.pec_mail" />
+                        <div>Cod SDI <span t-field="o.partner_id.codice_destinatario" /></div>
+                        <!--<br/>-->
+                    </div>
+                </div>
+                    <div class="page" style="padding-top:25px;">
+                        <DIV id="page_1">
+                            <DIV id="id1_2">
+                                <TABLE border="1" class="table text-center header-table bottom_border" style="width:100%;">
+                                    <TR>
+                                        <TD class="tr0 td0" style="background-color: grey;"><strong>DDT #</strong><p style="font-size: 8px;">Delivery note #</p></TD>
+                                        <TD colspan="3" style="background-color: grey;"><strong style="margin:0px;">Del</strong><p style="font-size: 8px;">Date</p></TD>
+                                        <TD class="tr0 td3" style="background-color: grey;"><strong>Rif esterno</strong><p style="font-size: 8px;">Customer ref.</p></TD>
+                                        <!--<TD class="tr0 td3" style="background-color: grey;"><strong>Page/tot pages</strong></TD>-->
+                                        <TD class="tr0 td4" style="background-color: grey;"><strong>ID cliente</strong><p style="font-size: 8px;">Customer ID</p></TD>
+                                        <TD colspan="3" style="background-color: grey;"><strong>P. IVA</strong> <p style="font-size: 8px;">VAT #</p></TD>
+                                        <TD class="tr0 td5" colspan="4" rowspan="4" style="font-size: 11px !IMPORTANT;">
+                                            <strong style='color:red;'>Indirizzo di consegna</strong><p style="font-size: 8px; text-align:left;">Delivery address</p>
+                                            <div t-field="o.partner_shipping_id" t-options='{"widget": "contact", "fields": ["address", "name", "phone"], "no_marker": True, "phone_icons": True}' />
+                                        </TD>
+                                    </TR>
+                                    <TR>
+                                        <TD class="tr1 td0">
+                                            <span t-field="o.ddt_number"></span>
+                                        </TD>
+                                        <TD colspan="3">
+                                            <P class="p8 ft11">
+                                                <NOBR><span t-field="o.date" t-options='{"widget": "date"}' /></NOBR>
+                                            </P>
+                                        </TD>
+                                        <TD class="tr1 td3">
+                                            <P class="p12 ft12">
+                                                <![CDATA[&nbsp;]]>
+                                            </P>
+                                        </TD>
+                                        <!--<TD class="tr1 td3">
+                                            <P class="p12 ft12"><span class="page"/><span class="topage"/></P>
+                                        </TD>-->
+                                        <TD class="tr1 td4"><span t-field="o.partner_id.id"></span></TD>
+                                        <TD colspan="3">
+                                            <P t-field="o.partner_id.vat"></P>
+                                        </TD>
+                                    </TR>
+                                    <TR style="background-color: grey;">
+                                        <!--<TD class="tr0 td0">
+                                            <P class="p6 ft6"><strong>Partner ref</strong></P>
+                                        </TD>-->
+                                         <TD class="tr0 td0">
+                                            <P class="p6 ft6"><strong>Causale trasporto</strong></P><p style="font-size: 8px;">Transportation reason</p>
+                                        </TD>
+                                        <TD colspan="3" class="tr0 td9">
+                                            <P class="p15 ft8"><strong>Metodo di trasporto</strong></P><p style="font-size: 8px;">Carriage method</p>
+                                        </TD>
+                                         <TD colspan="4">
+                                             <P class="p7 ft6"><strong>Porto</strong><p style="font-size: 8px;">Delivery terms</p></P>
+                                        </TD>
+                                        <TD class="tr0 td6">
+                                            <P class="p7 ft8"><strong>Data prevista consegna</strong><p style="font-size: 8px;">Expected delivery date</p></P>
+                                        </TD>
+                                    </TR>
+                                    <TR>
+                                        <!--<TD class="tr2 td0">
+                                            <P class="p7 ft7">
+                                                <![CDATA[&nbsp;]]>
+                                            </P>
+                                        </TD>-->
+                                        <TD class="tr2 td0">
+                                            <P t-field="o.transportation_reason_id.name"></P>
+                                        </TD>
+                                        <TD colspan="3" class="tr2 td9">
+                                            <P t-field="o.transportation_method_id.name"></P>
+                                        </TD>
+                                         <TD colspan="4" class="tr2 td12">
+                                            <P t-field="o.carriage_condition_id.name"></P>
+                                        </TD>
+                                        <TD class="tr2 td6">
+                                            <P class="p17 ft12">
+                                                <NOBR></NOBR>
+                                            </P>
+                                        </TD>
+                                    </TR>
+                                    <TR style="background-color: grey;">
+                                        <!--<TD colspan="4">
+                                            <P class="p7 ft6"><strong>Port</strong></P>
+                                        </TD>-->
+                                        <TD colspan="4" class="tr0 td10">
+                                            <P class="p18 ft6"><strong>Metodo di pagamento</strong></P><p style="font-size: 8px;">Payment method</p>
+                                        </TD>
+                                        <TD colspan="2" class="tr0 td10">
+                                            <P class="p18 ft6"><strong>Importo pagamento</strong></P><p style="font-size: 8px;">Payment amount</p>
+                                        </TD>
+                                        <TD colspan="6" class="tr0 td11">
+                                            <P class="p7 ft8"><strong>Inizio della consegna [Data e ora]</strong></P><p style="font-size: 8px;">Delivery started on [Date and time]</p>
+                                        </TD>
+                                    </TR>
+                                    <TR>
+                                        <!--<TD colspan="4" class="tr2 td12">
+                                            <P t-field="o.carriage_condition_id.name"></P>
+                                        </TD>-->
+                                        <TD colspan="4">
+                                            <P t-field="sale_order.payment_term_id.name"></P>
+                                        </TD>
+                                        <TD colspan="2">
+                                            <!--<P t-field="sale_order.payment_term_id.name"></P>-->
+                                            <P class="p7 ft7">
+                                                <![CDATA[&nbsp;]]>
+                                            </P>
+                                        </TD>
+                                        <TD colspan="6">
+                                            <!--<P class="p20 ft12" style='text-align:left'><strong>Date</strong></P>-->
+                                            <P class="p7 ft7">
+                                                <![CDATA[&nbsp;]]>
+                                            </P>
+                                        </TD>
+                                    </TR>
+
+                                    <TR style="background-color: grey;">
+                                        <TD colspan="6" class="tr5 td13">
+                                            <P class="p7 ft15"><strong>Trasporto effettuato dal nostro personale per l’inoltro al vettore</strong></P><p style="font-size: 8px;">Transport perfomed by our staff to the vector</p>
+                                        </TD>
+                                        <TD colspan="2">
+                                            <P class="p22 ft15"><strong>Variazioni</strong></P><p style="font-size: 8px;">Notes</p>
+                                        </TD>
+                                        <TD class="tr5 td7">
+                                            <P class="p23 ft17"><strong>Ordine #</strong></P><p style="font-size: 8px;">Order #</p>
+                                        </TD>
+                                        <TD class="tr5 td8">
+                                            <P class="p7 ft17"><strong>Prelievo Nr.</strong></P><p style="font-size: 8px;">Picking #</p>
+                                        </TD>
+                                    </TR>
+                                        <TR>
+                                        <t t-set='x' t-value='sale_order.confirmation_date' />
+                                        <TD rowspan="2" class="tr6 td0">
+                                            <P class="p7 ft7">
+                                                <![CDATA[&nbsp;]]>
+                                            </P></TD>
+                                        <TD rowspan="2" class="tr6 td1">
+                                            <P class="p7 ft7">
+                                                <![CDATA[&nbsp;]]>
+                                            </P></TD>
+                                        <TD colspan="4" rowspan="2" class="p20 ft12" style='text-align:left'><strong>Firma</strong><p style="font-size: 8px; text-align:left;">Signature</p></TD>
+                                        <TD colspan="2" class="tr7 td8">
+                                            <P class="p7 ft7">
+                                                <![CDATA[&nbsp;]]>
+                                            </P>
+                                        </TD>
+                                        <TD class="tr7 td7">
+                                            <P t-field="sale_order.name"></P>
+                                        </TD>
+                                        <TD class="tr7 td8">
+                                            <P class="p7 ft7">
+                                                <![CDATA[&nbsp;]]>
+                                            </P>
+                                        </TD>
+                                        </TR>
+                                    <TR></TR>
+                                    <TR style="background-color: grey;">
+                                        <TD colspan="5" class="tr9 td0">
+                                            <P class="p7 ft8"><strong>Depositario</strong></P><p style="font-size: 8px;">Depositary</p>
+                                        </TD>
+                                        <TD colspan="3" class="tr9 td4">
+                                            <P class="p7 ft8"><strong>Vettore</strong></P><p style="font-size: 8px;">Carrier</p>
+                                        </TD>
+                                        <TD class="tr9 td6">
+                                            <P class="p27 ft8"><strong>Consegnato il</strong></P><p style="font-size: 8px;">Delivered on</p>
+                                        </TD>
+                                        <TD colspan="3" class="tr9 td7">
+                                            <P class="p28 ft8"><strong>Firma</strong></P><p style="font-size: 8px;">Receiver Signature</p>
+                                        </TD>
+                                    </TR>
+                                    <TR>
+                                        <TD colspan="5" class="tr10 td15">
+                                            <P t-field="sale_order.warehouse_id.name"></P>
+                                        </TD>
+                                        <TD colspan="3" class="tr10 td4">
+                                            <P t-field="o.carrier_id.name"></P>
+                                        </TD>
+                                        <TD class="tr10 td6">
+                                            <P class="p7 ft7">
+                                                <![CDATA[&nbsp;]]>
+                                            </P>
+                                        </TD>
+                                        <TD colspan="3" class="tr10 td8">
+                                            <P class="p7 ft7">
+                                                <![CDATA[&nbsp;]]>
+                                            </P>
+                                        </TD>
+                                    </TR>
+                                </TABLE>
+                            </DIV>
+                        </DIV>
+                    </div>
+
+                    <div class="page">
+                        <DIV id="page_1">
+                            <DIV id="id1_2">
+                                    <!--<TABLE border="1" class="table text-center bottom_border" style="width:100%;">-->
+                                    <TABLE border="1" class="table text-center header-table bottom_border" style="width:100%;">
+                                        <THEAD>
+                                        <TR style="background-color: grey;">
+                                            <!--<TD colspan="2" class="tr11 td17">
+                                                <P class="p7 ft22"><strong>Art. Code.</strong></P>
+                                            </TD>-->
+                                            <TD colspan="1" class="tr11 td18">
+                                                <P class="p29 ft3"><strong>Ext. Cod</strong></P><p></p>
+                                            </TD>
+                                            <TD colspan="2" class="tr11 td19">
+                                                <P class="p7 ft22"><strong>Descrizione</strong></P><p style="font-size: 8px;">Description</p>
+                                            </TD>
+                                            <!--<TD colspan="1" class="tr12 td20">
+                                                <P class="p30 ft3"><strong>Assort. Range</strong></P>
+                                            </TD>
+                                            <TD colspan="1" class="tr12 td21">
+                                                <P class="p30 ft3"><strong>Assort</strong></P>
+                                            </TD>-->
+                                            <TD colspan="1" class="tr12 td22">
+                                                <P class="p30 ft3"><strong>U.M.</strong></P><p></p>
+                                            </TD>
+                                            <TD colspan="1" class="tr12 td23">
+                                                <P class="p30 ft3"><strong>Qtà</strong></P><p style="font-size: 8px;">Qty</p>
+                                            </TD>
+                                            <!--<TD colspan="1" class="tr12 td24">
+                                                <P class="p30 ft3"><strong>Paia per collo</strong></P>
+                                            </TD>
+                                            <TD colspan="1" class="tr12 td25">
+                                                <P class="p30 ft3"><strong>Distr. taglie</strong></P>
+                                            </TD>-->
+                                            <TD colspan="1" class="tr12 td26">
+                                                <P class="p30 ft3"><strong>Totale</strong></P><p style="font-size: 8px;">Total</p>
+                                            </TD>
+                                        </TR>
+                                        </THEAD>
+                                        <TBODY>
+                                        <t t-foreach="o.order_line_ids" t-as="line">
+                                                <tr>
+                                                    <!--<td colspan="2" class="tr10 td16">
+                                                        <span t-field="line.name"></span></td>-->
+                                                    <td colspan="1" class="tr10 td17"><span t-field="line.external_code"></span></td>
+                                                    <TD colspan="2" class="tr10 td18"><span t-field="line.name"></span></TD>
+                                                    <!--<TD colspan="1" class="tr10 td19"><span t-field="line.product_id.attribute_value_ids.name"></span></TD>
+                                                    <TD colspan="1" class="tr10 td20"><span><![CDATA[&nbsp;]]> </span></TD>-->
+                                                    <TD colspan="1" class="tr10 td21"><span t-field="line.product_uom"></span></TD>
+                                                    <TD colspan="1" class="tr10 td22"><span t-field="line.product_uom_qty"></span></TD>
+                                                    <!--<TD colspan="1" class="tr10 td23"><span><![CDATA[&nbsp;]]></span></TD>
+                                                    <TD colspan="1" class="tr10 td24"><div><span t-field="line.pairs_total"></span>(<span t-field="line.product_id.attribute_value_ids.name"></span>)</div></TD>-->
+                                                    <TD colspan="1" class="tr10 td25"><span t-field="line.pairs_total"></span></TD>
+                                                </tr>
+
+                                            <!--<t t-if="line.product_id.product_tmpl_id.is_kit">
+                                                <t t-foreach="line.product_id.bom_line_ids" t-as="bom_line">
+                                                    <t t-foreach="o.line_ids" t-as="ddt_line">
+                                                        <t t-if="bom_line.product_id==ddt_line.product_id">
+                                                            <tr>
+                                                                <td colspan="2" class="tr10 td16">
+                                                                    <span t-field="bom_line.product_id"></span></td>
+                                                                <td colspan="1" class="tr10 td17">
+                                                                    <p class="p32 ft13">
+                                                                        <![CDATA[&nbsp;]]>
+                                                                    </p>
+                                                                </td>
+                                                                <TD colspan="2" class="tr10 td18"><span t-field="bom_line.product_id.name"></span></TD>
+                                                                <TD colspan="1" class="tr10 td19"><span t-field="line.range_start"></span>-<span t-field="line.range_end"></span></TD>
+                                                                <TD colspan="1" class="tr10 td20"><span t-field="line.assortment_id.code"></span></TD>
+                                                                <TD colspan="1" class="tr10 td21">
+                                                                    <P class="p33 ft13">Paia</P>
+                                                                </TD>
+                                                                <TD colspan="1" class="tr10 td22"><span t-field="ddt_line.product_uom_qty"></span></TD>
+                                                                <TD colspan="1" class="tr10 td23">
+                                                                    <P class="p34 ft13">65</P>
+                                                                </TD>
+                                                                <TD colspan="1" class="tr10 td24"><span t-field="line.pairs_size"></span></TD>
+                                                                <TD colspan="1" class="tr10 td25"><span t-field="line.pairs_total"></span></TD>
+                                                            </tr>
+                                                        </t>
+                                                    </t>
+                                                </t>
+                                            </t>-->
+                                        </t>
+                                        </TBODY>
+                                    </TABLE>
+                                <DIV id="id1_3_1">
+                                    <TABLE border="1" class="table text-center" style="width:100%;">
+                                        <TR style="background-color: grey;">
+                                            <TD colspan="3" class="tr13 td1">
+                                                <P class="p7 ft22"><strong>Aspetto esteriore dei beni</strong></P><p style="font-size: 8px;">Goods appearence</p>
+                                            </TD>
+                                            <TD colspan="2" class="tr13 td2">
+                                                <P class="p29 ft3"><strong>Peso lordo (Kg)</strong></P><p style="font-size: 8px;">Gross weight (kg)</p>
+                                            </TD>
+                                            <TD colspan="2" class="tr13 td3">
+                                                <P class="p7 ft22"><strong>Peso netto (Kg)</strong></P><p style="font-size: 8px;">Net weight (Kg)</p>
+                                            </TD>
+                                            <TD colspan="2" class="tr13 td4">
+                                                <P class="p30 ft3"><strong>Volume (m3)</strong></P>
+                                            </TD>
+                                            <TD colspan="1" class="tr13 td5">
+                                                <P class="p30 ft3"><strong># Totale unità</strong></P><p style="font-size: 8px;">Tot. items</p>
+                                            </TD>
+                                            <TD colspan="1" class="tr13 td6">
+                                                <P class="p30 ft3"><strong>Tot. colli</strong></P><p style="font-size: 8px;">Total Parcels</p>
+                                            </TD>
+                                            <!--<TD colspan="1" class="tr13 td7">
+                                                <P class="p30 ft3"><strong>Tot boxes</strong></P>
+                                            </TD>-->
+
+                                        </TR>
+                                        <TR>
+                                            <TD colspan="3" class="tr14 td1"><span t-field="o.goods_description_id.name"></span></TD>
+                                            <TD colspan="2" class="tr14 td2"><span t-field="o.gross_weight"></span></TD>
+                                            <TD colspan="2" class="tr14 td3"><span t-field="o.weight_manual"></span></TD>
+                                            <TD colspan="2" class="tr14 td4"><span t-field="o.volume"></span></TD>
+                                            <TD colspan="1" class="tr14 td5"><span t-field="o.pairs_total"></span></TD>
+                                            <TD colspan="1" class="tr14 td6"><span t-field="o.parcels"></span></TD>
+                                            <!--<TD colspan="1" class="tr14 td7">
+                                            </TD>-->
+
+                                        </TR>
+                                        <TR>
+                                            <TD colspan="12" class="tr15 td1"> <span t-field="o.note" />
+                                                <BR><strong>Documento di Trasporto D.P.R. 14/08/96 N. 472 Art. 1 .c.3)</strong><p style="font-size: 6px; text-align:left;">Transport Document Presidential Decree 14/08/96 N. 472 Art. 1 .c.3)</p></BR>
+                                                <BR><strong>Contributo CONAI assolto ove dovuto</strong></BR><p style="font-size: 6px; text-align:left;">Contribution Conai acquitted where due</p>
+                                            </TD>
+                                        </TR>
+                                        <TR>
+                                            <TD colspan="8" class="tr15 td1" style="text-align: right;">Firma Vettore / Carrier signature</TD>
+                                            <TD colspan="4" class="tr15 td1" style="text-align: right;"><![CDATA[&nbsp;]]></TD>
+                                        </TR>
+                                    </TABLE>
+                                </DIV>
+                            </DIV>
+                        </DIV>
+                    </div>
+                    <!-- body code end here -->
+                </t>
+        </t>
+            <!-- </t> -->
+        </t>
+        </template>
+
+        <template id="report_ddt_main_noscarpe">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <t t-call="stock_mgmt.report_ddt_noscarpe" t-lang="o.partner_id.lang"/>
+                </t>
+            </t>
+        </template>
+        <report string="DDT_CUSTOM_NOSCARPE"
+         id="action_report_ddt_noscarpe"
+          model="stock.picking.package.preparation"
+          report_type="qweb-pdf"
+           name="stock_mgmt.report_ddt_main_noscarpe"
+           file="stock_mgmt.report_ddt_main_noscarpe" />
+
+    </odoo>

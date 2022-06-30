@@ -1,0 +1,12 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_fob_order_user,fob.order,model_fob_order,base.group_user,1,1,1,1
+access_fob_order_line_user,fob.order.line,model_fob_order_line,base.group_user,1,1,1,1
+access_fob_po_order_user,fob.po.order,model_fob_po_order,base.group_user,1,1,1,1
+access_fob_po_order_line_user,fob.po.order.line,model_fob_po_order_line,base.group_user,1,1,1,1
+access_fob_season_user,fob.season,model_fob_season,base.group_user,1,1,1,1
+access_fob_harbour_user,fob.harbour,model_fob_harbour,base.group_user,1,1,1,1
+access_fob_incoterms_user,fob.incoterms,model_fob_incoterms,base.group_user,1,1,1,1
+access_fob_order_accounts_user,fob.order.accounts,model_fob_order_accounts,base.group_user,1,1,1,1
+access_fob_po_order_accounts_user,fob.po.order.accounts,model_fob_po_order_accounts,base.group_user,1,1,1,1
+access_fob_po_invoice_accounts_user,account.invoice.accounts,model_account_invoice_accounts,base.group_user,1,1,1,1
+

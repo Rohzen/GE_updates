@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<odoo>
+    <data>
+
+        <record id="orders_line_stock_picking_package_preparation_form_ddt"
+                model="ir.ui.view">
+            <field name="name">
+                orders.line.stock.picking.package.preparation.form.ddt
+            </field>
+            <field name="model">stock.picking.package.preparation</field>
+            <field name="inherit_id"
+                   ref="stock_picking_package_preparation_line.sppp_line_stock_picking_package_preparation_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//notebook[last()]" position="inside">
+                        <page string="Order lines">
+                            <group>
+                                    <field name="order_line_ids" string="">
+                                        <tree string="Order lines" editable="bottom">
+                                                <field name="product_uom_qty"/>
+                                                <field name="product_uom"/>
+                                                <field name="name" string="name"/>
+                                                <field name="pairs_size" />
+                                                <field name="pairs_total" />
+                                        </tree>
+                                        <form string="Order lines">
+                                            <group>
+                                                <field name="product_uom_qty"/>
+                                                <field name="product_uom"/>
+                                                <field name="name" string="name"/>
+                                                <field name="pairs_size" />
+                                                <field name="pairs_total" />
+                                            </group>
+                                        </form>
+                                    </field>
+                            </group>
+                    </page>
+                 </xpath>
+
+            </field>
+        </record>
+
+    </data>
+</odoo>

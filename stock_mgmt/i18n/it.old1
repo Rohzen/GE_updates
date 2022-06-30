@@ -1,0 +1,1103 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#	* stock_mgmt
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 12.0-20191003\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-12-05 18:08+0000\n"
+"PO-Revision-Date: 2019-12-05 18:08+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: stock_mgmt
+#: code:addons/stock_mgmt/models/sale.py:271
+#, python-format
+msgid "\n"
+"There are %s %s available across all warehouses.\n"
+"\n"
+""
+msgstr "\n"
+"Ci sono %s %s disponibili a magazzino.\n"
+"\n"
+""
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.report_saleorder_document_custom
+msgid "&amp;nbsp;<span>on</span>&amp;nbsp;"
+msgstr "&amp;nbsp;<span>su</span>&amp;nbsp;"
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.report_saleorder_document_custom
+msgid "<span>Disc.(%)</span>"
+msgstr "<span>Sconto (%)</span>"
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.report_saleorder_document_custom
+msgid "<span>Pro-Forma Invoice # </span>"
+msgstr "<span>Fattura proforma n. </span>"
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.report_saleorder_document_custom
+msgid "<strong class=\"mr16\">Subtotal</strong>"
+msgstr "<strong class=\"mr16\">Imponibile</strong>"
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.report_purchaseorder_document_custom
+msgid "<strong>Amount</strong>"
+msgstr "<strong>Importo</strong>"
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.report_ddt_custom
+msgid "<strong>Assort</strong>"
+msgstr ""
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.report_purchaseorder_document_custom
+msgid "<strong>Assortment</strong>"
+msgstr "<strong>Assortimento</strong>"
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.report_saleorder_document_custom
+msgid "<strong>Date Ordered:</strong>"
+msgstr "<strong>Data dell'ordine:</strong>"
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.report_ddt_custom
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.report_purchaseorder_document_custom
+msgid "<strong>Description</strong>"
+msgstr "<strong>Descrizione</strong>"
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.report_ddt_custom
+msgid "<strong>Discount</strong>"
+msgstr "<strong>Sconto</strong>"
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.report_saleorder_document_custom
+msgid "<strong>Expiration Date:</strong>"
+msgstr "<strong>Data di scadenza:</strong>"
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.report_purchaseorder_document_custom
+msgid "<strong>Ext.Code</strong>"
+msgstr "Cod.Fornitore"
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.report_saleorder_document_custom
+msgid "<strong>Fiscal Position Remark:</strong>"
+msgstr "<strong>Note su posizione fiscale:</strong>"
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.report_purchaseorder_document_custom
+msgid "<strong>From size</strong>"
+msgstr "<strong>Taglia da</strong>"
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.report_ddt_custom
+msgid "<strong>Lots/Serial Numbers</strong>"
+msgstr "<strong>Lotti/Numeri seriali</strong>"
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.report_purchaseorder_document_custom
+msgid "<strong>Order Date:</strong>"
+msgstr "<strong>Data ordine:</strong>"
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.report_purchaseorder_document_custom
+msgid "<strong>Our Order Reference:</strong>"
+msgstr "<strong>Riferimento nostro ordine:</strong>"
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.report_ddt_custom
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.report_purchaseorder_document_custom
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.report_saleorder_document_custom
+msgid "<strong>Packs total</strong>"
+msgstr "<strong>totale colli</strong>"
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.report_ddt_custom
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.report_purchaseorder_document_custom
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.report_saleorder_document_custom
+msgid "<strong>Pairs for size</strong>"
+msgstr "<strong>Distr. per taglia</strong>"
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.report_ddt_custom
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.report_purchaseorder_document_custom
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.report_saleorder_document_custom
+msgid "<strong>Pairs total</strong>"
+msgstr "<strong>Totale paia</strong>"
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.report_saleorder_document_custom
+msgid "<strong>Payment Terms:</strong>"
+msgstr "<strong>Termini di pagamento:</strong>"
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.report_ddt_custom
+msgid "<strong>Price</strong>"
+msgstr "<strong>Prezzo</strong>"
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.report_ddt_custom
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.report_purchaseorder_document_custom
+msgid "<strong>Product image</strong>"
+msgstr "<strong>Immagine</strong>"
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.report_purchaseorder_document_custom
+msgid "<strong>Qty</strong>"
+msgstr "<strong>Q.tà</strong>"
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.report_ddt_custom
+msgid "<strong>Quantity</strong>"
+msgstr "<strong>Quantità</strong>"
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.report_saleorder_document_custom
+msgid "<strong>Quotation Date:</strong>"
+msgstr "<strong>Data quotazione:</strong>"
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.report_saleorder_document_custom
+msgid "<strong>Salesperson:</strong>"
+msgstr "<strong>Commerciale:</strong>"
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.report_purchaseorder_document_custom
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.report_saleorder_document_custom
+msgid "<strong>Shipping address:</strong>"
+msgstr "<strong>Indirizzo di spedizione:</strong>"
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.report_saleorder_document_custom
+msgid "<strong>Signature</strong>"
+msgstr "<strong>Firma</strong>"
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.report_purchaseorder_document_custom
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.report_saleorder_document_custom
+msgid "<strong>Subtotal</strong>"
+msgstr "<strong>Imponibile</strong>"
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.report_purchaseorder_document_custom
+msgid "<strong>To size</strong>"
+msgstr "<strong>A taglia</strong>"
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.report_ddt_custom
+msgid "<strong>Total pairs</strong>"
+msgstr "<strong>Totale paia</strong>"
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.report_purchaseorder_document_custom
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.report_saleorder_document_custom
+msgid "<strong>Total</strong>"
+msgstr "<strong>Totale</strong>"
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.report_purchaseorder_document_custom
+msgid "<strong>Unit Price</strong>"
+msgstr "<strong>Prezzo unitario</strong>"
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.report_ddt_custom
+msgid "<strong>UoM</strong>"
+msgstr ""
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.report_purchaseorder_document_custom
+msgid "<strong>Your Order Reference:</strong>"
+msgstr "<strong>Riferimento ordine:</strong>"
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.report_saleorder_document_custom
+msgid "<strong>Your Reference:</strong>"
+msgstr "<strong>Il tuo Riferimento:</strong>"
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.view_company_form_stock_mgmt
+msgid "ATTENTION:Are you sure to delete products, sale, purchase and stock ?"
+msgstr "ATTENZIONE: Sei sicuro di voler cancellare i prodotti, doc di vendita e acquisto e magazzino?"
+
+#. module: stock_mgmt
+#: model:ir.actions.act_window,name:stock_mgmt.products_confirmation_request_action
+msgid "Action confirmation"
+msgstr "Conferma"
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.report_saleorder_document_custom
+msgid "Amount"
+msgstr "Importo"
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.report_ddt_custom
+msgid "Assignee"
+msgstr "Cessionario"
+
+#. module: stock_mgmt
+#: model:ir.model.fields,field_description:stock_mgmt.field_product_assortment__name
+#: model:ir.model.fields,field_description:stock_mgmt.field_product_product__assortment_id
+#: model:ir.model.fields,field_description:stock_mgmt.field_product_template__assortment_id
+#: model:ir.model.fields,field_description:stock_mgmt.field_purchase_order_line__assortment_id
+#: model:ir.model.fields,field_description:stock_mgmt.field_sale_order_line__assortment_id
+#: model:ir.model.fields,field_description:stock_mgmt.field_wizard_assortment__assortment_id
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.report_saleorder_document_custom
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.view_order_form_inherit_purchase_stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.view_order_form_inherit_sale_stock_mgmt
+msgid "Assortment"
+msgstr "Assortimento"
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.stock_assortment_tree
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.wizard_assortment_form
+msgid "Assortments"
+msgstr "Assortimento"
+
+#. module: stock_mgmt
+#: model:ir.model.fields,field_description:stock_mgmt.field_product_product__is_base
+msgid "Base product?"
+msgstr "Item flag?"
+
+#. module: stock_mgmt
+#: model:ir.model.fields,field_description:stock_mgmt.field_product_product__bom_id
+#: model:ir.model.fields,field_description:stock_mgmt.field_product_template__bom_id
+msgid "Bom"
+msgstr ""
+
+#. module: stock_mgmt
+#: model:ir.model.fields,field_description:stock_mgmt.field_product_product__bom_line_ids
+#: model:ir.model.fields,field_description:stock_mgmt.field_product_template__bom_line_ids
+msgid "Bom Lines"
+msgstr ""
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.wizard_assortment_form
+msgid "CREA ASSORTIMENTO"
+msgstr "Crea ass."
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.products_confirmation_form
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.wizard_assortment_form
+msgid "Cancel"
+msgstr "Annulla"
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.report_purchaseorder_document_custom
+msgid "Cancelled Purchase Order #"
+msgstr "N. ordini di acquisto annullati"
+
+#. module: stock_mgmt
+#: code:addons/stock_mgmt/models/assortment.py:113
+#: code:addons/stock_mgmt/models/purchase.py:157
+#: code:addons/stock_mgmt/models/sale.py:119
+#, python-format
+msgid "Cannot create a new set, invalid range of sizes:%s on: %s"
+msgstr "Non puoi creare un assortimento di misure: %s in %s"
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.delivery_data_custom
+msgid "Carriage Condition"
+msgstr "Condizione di trasporto"
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.delivery_data_custom
+msgid "Carrier"
+msgstr "Vettore"
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.delivery_data_custom
+msgid "Carrier's Signature"
+msgstr "Firma del vettore"
+
+#. module: stock_mgmt
+#: model:ir.model.fields,field_description:stock_mgmt.field_purchase_order__change
+msgid "Change"
+msgstr "Modifica"
+
+#. module: stock_mgmt
+#: model:ir.model.fields,field_description:stock_mgmt.field_product_assortment__code
+msgid "Code"
+msgstr "Codice"
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.product_product_stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.product_template_stock_mgmt
+msgid "Codice composizione Kit"
+msgstr ""
+
+#. module: stock_mgmt
+#: model:ir.model,name:stock_mgmt.model_res_company
+msgid "Companies"
+msgstr "Aziende"
+
+#. module: stock_mgmt
+#: model:ir.actions.act_window,name:stock_mgmt.act_stock_pro_confirm
+msgid "Confirm incoming products"
+msgstr "Conferma ricezione prodotti programmata"
+
+#. module: stock_mgmt
+#: model:ir.model,name:stock_mgmt.model_stock_move_confirm
+msgid "Confirm product arrival"
+msgstr "Conferma ricezione prodotti"
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.report_ddt_custom
+msgid "Consignee"
+msgstr "Destinatario"
+
+#. module: stock_mgmt
+#: model:ir.ui.menu,name:stock_mgmt.menuitem_wizard_creazione_articoli_action
+msgid "Crea assortimento"
+msgstr ""
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.wizard_assortment_form
+msgid "Create a new set ?"
+msgstr "Crea un nuovo ass.?"
+
+#. module: stock_mgmt
+#: model:ir.model.fields,field_description:stock_mgmt.field_product_assortment__create_uid
+#: model:ir.model.fields,field_description:stock_mgmt.field_product_assortment_line__create_uid
+#: model:ir.model.fields,field_description:stock_mgmt.field_product_externalcodes__create_uid
+#: model:ir.model.fields,field_description:stock_mgmt.field_product_manifacturing__create_uid
+#: model:ir.model.fields,field_description:stock_mgmt.field_product_material__create_uid
+#: model:ir.model.fields,field_description:stock_mgmt.field_product_sizes__create_uid
+#: model:ir.model.fields,field_description:stock_mgmt.field_stock_move_confirm__create_uid
+#: model:ir.model.fields,field_description:stock_mgmt.field_wizard_assortment__create_uid
+msgid "Created by"
+msgstr "Creato da"
+
+#. module: stock_mgmt
+#: model:ir.model.fields,field_description:stock_mgmt.field_product_assortment__create_date
+#: model:ir.model.fields,field_description:stock_mgmt.field_product_assortment_line__create_date
+#: model:ir.model.fields,field_description:stock_mgmt.field_product_externalcodes__create_date
+#: model:ir.model.fields,field_description:stock_mgmt.field_product_manifacturing__create_date
+#: model:ir.model.fields,field_description:stock_mgmt.field_product_material__create_date
+#: model:ir.model.fields,field_description:stock_mgmt.field_product_sizes__create_date
+#: model:ir.model.fields,field_description:stock_mgmt.field_stock_move_confirm__create_date
+#: model:ir.model.fields,field_description:stock_mgmt.field_wizard_assortment__create_date
+msgid "Created on"
+msgstr "Creato il"
+
+#. module: stock_mgmt
+#: model:ir.actions.act_window,name:stock_mgmt.wizard_creazione_articoli_action
+msgid "Creazione articoli"
+msgstr ""
+
+#. module: stock_mgmt
+#: model:ir.actions.report,name:stock_mgmt.action_report_purchase_order_custom
+msgid "Custom Purchase Order"
+msgstr "Ordine personalizzato"
+
+#. module: stock_mgmt
+#: model:ir.actions.report,name:stock_mgmt.action_report_ddt_custom
+msgid "DDT_CUSTOM"
+msgstr ""
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.report_saleorder_document_custom
+msgid "Description"
+msgstr "Descrizione"
+
+#. module: stock_mgmt
+#: model:ir.model.fields,field_description:stock_mgmt.field_product_assortment__display_name
+#: model:ir.model.fields,field_description:stock_mgmt.field_product_assortment_line__display_name
+#: model:ir.model.fields,field_description:stock_mgmt.field_product_externalcodes__display_name
+#: model:ir.model.fields,field_description:stock_mgmt.field_product_manifacturing__display_name
+#: model:ir.model.fields,field_description:stock_mgmt.field_product_material__display_name
+#: model:ir.model.fields,field_description:stock_mgmt.field_product_sizes__display_name
+#: model:ir.model.fields,field_description:stock_mgmt.field_stock_move_confirm__display_name
+#: model:ir.model.fields,field_description:stock_mgmt.field_wizard_assortment__display_name
+msgid "Display Name"
+msgstr "Nome visualizzato"
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.stock_move_custom_tree
+msgid "Done"
+msgstr "Completato"
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.delivery_data_custom
+msgid "Driver's Signature"
+msgstr "Firma del conducente"
+
+#. module: stock_mgmt
+#: code:addons/stock_mgmt/models/assortment.py:86
+#: code:addons/stock_mgmt/models/purchase.py:130
+#: code:addons/stock_mgmt/models/sale.py:92
+#, python-format
+msgid "E' necessario selezionare un prodotto"
+msgstr "E' necessario selezionare un articolo"
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.wizard_assortment_form
+msgid "End range"
+msgstr "A taglia"
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.view_order_form_inherit_purchase_stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.view_order_form_inherit_sale_stock_mgmt
+msgid "Es.: 1-1-2-2-2-2"
+msgstr ""
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.report_ddt_custom
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.report_saleorder_document_custom
+msgid "Ext code"
+msgstr ""
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.view_order_form_inherit_purchase_stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.view_order_form_inherit_sale_stock_mgmt
+msgid "Ext.code"
+msgstr ""
+
+#. module: stock_mgmt
+#: model:ir.model.fields,field_description:stock_mgmt.field_product_assortment_line__asrt_code_id
+#: model:ir.model.fields,field_description:stock_mgmt.field_product_externalcodes__ext_code_id
+msgid "External ID"
+msgstr "ID esterno"
+
+#. module: stock_mgmt
+#: model:ir.model.fields,field_description:stock_mgmt.field_product_externalcodes__name
+#: model:ir.model.fields,field_description:stock_mgmt.field_purchase_order_line__external_code
+#: model:ir.model.fields,field_description:stock_mgmt.field_sale_order_line__external_code
+msgid "External code"
+msgstr ""
+
+#. module: stock_mgmt
+#: model:ir.model.fields,field_description:stock_mgmt.field_product_product__external_codes
+#: model:ir.model.fields,field_description:stock_mgmt.field_product_template__external_codes
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.product_product_stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.product_template_stock_mgmt
+msgid "External codes"
+msgstr ""
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.report_ddt_custom
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.report_saleorder_document_custom
+msgid "From size"
+msgstr "Dalla taglia"
+
+#. module: stock_mgmt
+#: model:ir.ui.menu,name:stock_mgmt.menu_stock_mgmt
+msgid "Items manager"
+msgstr "Gestione items"
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.delivery_data_custom
+msgid "Goods Description"
+msgstr "Descrizione dei beni"
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.delivery_data_custom
+msgid "Gross Weight"
+msgstr "Peso lordo"
+
+#. module: stock_mgmt
+#: model:ir.model.fields,field_description:stock_mgmt.field_product_product__weight_gross
+#: model:ir.model.fields,field_description:stock_mgmt.field_product_template__weight_gross
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.product_product_stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.product_template_stock_mgmt
+msgid "Gross weight"
+msgstr "Peso lordo"
+
+#. module: stock_mgmt
+#: model:ir.model.fields,field_description:stock_mgmt.field_product_assortment__id
+#: model:ir.model.fields,field_description:stock_mgmt.field_product_assortment_line__id
+#: model:ir.model.fields,field_description:stock_mgmt.field_product_externalcodes__id
+#: model:ir.model.fields,field_description:stock_mgmt.field_product_manifacturing__id
+#: model:ir.model.fields,field_description:stock_mgmt.field_product_material__id
+#: model:ir.model.fields,field_description:stock_mgmt.field_product_sizes__id
+#: model:ir.model.fields,field_description:stock_mgmt.field_stock_move_confirm__id
+#: model:ir.model.fields,field_description:stock_mgmt.field_wizard_assortment__id
+msgid "ID"
+msgstr ""
+
+#. module: stock_mgmt
+#: code:addons/stock_mgmt/models/assortment.py:102
+#: code:addons/stock_mgmt/models/purchase.py:146
+#: code:addons/stock_mgmt/models/sale.py:108
+#, python-format
+msgid "Length must be at least 4 digits"
+msgstr "Il [cod. art.] deve contenere almeno 4 caratteri"
+
+#. module: stock_mgmt
+#: code:addons/stock_mgmt/models/assortment.py:99
+#: code:addons/stock_mgmt/models/purchase.py:143
+#: code:addons/stock_mgmt/models/sale.py:105
+#, python-format
+msgid "Error: [cod. art] is empty. Please set one in the item page."
+msgstr "Errore: Il prodotto base non ha un [cod. art.]."
+
+#. module: stock_mgmt
+#: model:ir.model.fields,field_description:stock_mgmt.field_purchase_order_line__image
+#: model:ir.model.fields,field_description:stock_mgmt.field_sale_order_line__image
+#: model:ir.model.fields,field_description:stock_mgmt.field_wizard_assortment__image
+msgid "Image"
+msgstr "Immagine"
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.products_confirmation_form
+msgid "Incoming products confirmation"
+msgstr "Conferma ricezione prodotti"
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.stock_move_custom_tree
+msgid "Incoming products management"
+msgstr "Gestione item in ingresso"
+
+#. module: stock_mgmt
+#: model:ir.actions.act_window,name:stock_mgmt.action_stock_mgmt_custom
+#: model:ir.ui.menu,name:stock_mgmt.menu_stock_mgmt_custom
+msgid "Incoming products management "
+msgstr "Gestione item in ingresso"
+
+#. module: stock_mgmt
+#: model_terms:ir.actions.act_window,help:stock_mgmt.action_stock_mgmt_custom
+msgid "Incoming products."
+msgstr "Item in ingresso."
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.stock_move_custom_tree
+msgid "Initial Demand"
+msgstr "Domanda iniziale"
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.report_saleorder_document_custom
+msgid "Invoicing address:"
+msgstr "Indirizzo di fatturazione:"
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.report_saleorder_document_custom
+msgid "Invoicing and shipping address:"
+msgstr "Indirizzo di fatturazione e spedizione:"
+
+#. module: stock_mgmt
+#: model:ir.model.fields,field_description:stock_mgmt.field_product_product__is_kit
+#: model:ir.model.fields,field_description:stock_mgmt.field_product_template__is_kit
+msgid "Is a kit?"
+msgstr "E' un kit?"
+
+#. module: stock_mgmt
+#: model:ir.model.fields,field_description:stock_mgmt.field_product_assortment____last_update
+#: model:ir.model.fields,field_description:stock_mgmt.field_product_assortment_line____last_update
+#: model:ir.model.fields,field_description:stock_mgmt.field_product_externalcodes____last_update
+#: model:ir.model.fields,field_description:stock_mgmt.field_product_manifacturing____last_update
+#: model:ir.model.fields,field_description:stock_mgmt.field_product_material____last_update
+#: model:ir.model.fields,field_description:stock_mgmt.field_product_sizes____last_update
+#: model:ir.model.fields,field_description:stock_mgmt.field_stock_move_confirm____last_update
+#: model:ir.model.fields,field_description:stock_mgmt.field_wizard_assortment____last_update
+msgid "Last Modified on"
+msgstr "Ultima modifica il"
+
+#. module: stock_mgmt
+#: model:ir.model.fields,field_description:stock_mgmt.field_product_assortment__write_uid
+#: model:ir.model.fields,field_description:stock_mgmt.field_product_assortment_line__write_uid
+#: model:ir.model.fields,field_description:stock_mgmt.field_product_externalcodes__write_uid
+#: model:ir.model.fields,field_description:stock_mgmt.field_product_manifacturing__write_uid
+#: model:ir.model.fields,field_description:stock_mgmt.field_product_material__write_uid
+#: model:ir.model.fields,field_description:stock_mgmt.field_product_sizes__write_uid
+#: model:ir.model.fields,field_description:stock_mgmt.field_stock_move_confirm__write_uid
+#: model:ir.model.fields,field_description:stock_mgmt.field_wizard_assortment__write_uid
+msgid "Last Updated by"
+msgstr "Ultimo aggiornamento di"
+
+#. module: stock_mgmt
+#: model:ir.model.fields,field_description:stock_mgmt.field_product_assortment__write_date
+#: model:ir.model.fields,field_description:stock_mgmt.field_product_assortment_line__write_date
+#: model:ir.model.fields,field_description:stock_mgmt.field_product_externalcodes__write_date
+#: model:ir.model.fields,field_description:stock_mgmt.field_product_manifacturing__write_date
+#: model:ir.model.fields,field_description:stock_mgmt.field_product_material__write_date
+#: model:ir.model.fields,field_description:stock_mgmt.field_product_sizes__write_date
+#: model:ir.model.fields,field_description:stock_mgmt.field_stock_move_confirm__write_date
+#: model:ir.model.fields,field_description:stock_mgmt.field_wizard_assortment__write_date
+msgid "Last Updated on"
+msgstr "Ultimo aggiornamento il"
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.product_product_stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.product_template_stock_mgmt
+msgid "Manifacture type"
+msgstr ""
+
+#. module: stock_mgmt
+#: model:ir.model.fields,field_description:stock_mgmt.field_product_product__manifacturing_id
+#: model:ir.model.fields,field_description:stock_mgmt.field_product_template__manifacturing_id
+msgid "Manifacturing Type"
+msgstr ""
+
+#. module: stock_mgmt
+#: model:ir.model.fields,field_description:stock_mgmt.field_product_manifacturing__name
+msgid "Manifacturing code"
+msgstr ""
+
+#. module: stock_mgmt
+#: model:ir.model.fields,field_description:stock_mgmt.field_product_material__name
+#: model:ir.model.fields,field_description:stock_mgmt.field_product_product__material_id
+#: model:ir.model.fields,field_description:stock_mgmt.field_product_template__material_id
+msgid "Material"
+msgstr "Materiale"
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.delivery_data_custom
+msgid "Net Weight"
+msgstr "Peso netto"
+
+#. module: stock_mgmt
+#: code:addons/stock_mgmt/models/sale.py:253
+#: code:addons/stock_mgmt/models/sale.py:278
+#, python-format
+msgid "Not enough inventory!"
+msgstr "Disponibilità in magazzino non sufficiente!"
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.delivery_data_custom
+msgid "Notes"
+msgstr "Note"
+
+#. module: stock_mgmt
+#: code:addons/stock_mgmt/models/purchase.py:305
+#, python-format
+msgid "Open item detail"
+msgstr "Visualizza dettagli item"
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.report_saleorder_document_custom
+msgid "Order #"
+msgstr "Ordine n."
+
+#. module: stock_mgmt
+#: model:ir.model.fields,field_description:stock_mgmt.field_stock_picking_package_preparation__order_line_ids
+msgid "Order Lines"
+msgstr "Righe ordine"
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.orders_line_stock_picking_package_preparation_form_ddt
+msgid "Order lines"
+msgstr "Righe d'ordine"
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.product_product_stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.product_template_stock_mgmt
+msgid "Pack composition"
+msgstr "Composizione collo"
+
+#. module: stock_mgmt
+#: model:ir.model,name:stock_mgmt.model_stock_picking_package_preparation
+msgid "Package Preparation"
+msgstr "Preparazione collo"
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.delivery_data_custom
+msgid "Packages"
+msgstr "Colli"
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.product_product_stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.product_template_stock_mgmt
+msgid "Packaging"
+msgstr "Imballaggio"
+
+#. module: stock_mgmt
+#: model:ir.model.fields,field_description:stock_mgmt.field_sale_order_line__pairs_total
+#: model:ir.model.fields,field_description:stock_mgmt.field_stock_picking_package_preparation__packs_total
+#: model:ir.model.fields,field_description:stock_mgmt.field_wizard_assortment__pairs_total
+msgid "Pairs"
+msgstr "Paia"
+
+#. module: stock_mgmt
+#: model:ir.model.fields,field_description:stock_mgmt.field_purchase_order_line__pairs_size
+#: model:ir.model.fields,field_description:stock_mgmt.field_sale_order_line__pairs_size
+#: model:ir.model.fields,field_description:stock_mgmt.field_stock_picking_package_preparation__pairs_total
+#: model:ir.model.fields,field_description:stock_mgmt.field_wizard_assortment__pairs_size
+msgid "Pairs (Sz.)"
+msgstr "Paia (Tg)"
+
+#. module: stock_mgmt
+#: model:ir.model.fields,field_description:stock_mgmt.field_purchase_order_line__pairs_in_pack
+#: model:ir.model.fields,field_description:stock_mgmt.field_sale_order_line__pairs_in_pack
+msgid "Pairs in pack"
+msgstr "Paia per collo"
+
+#. module: stock_mgmt
+#: model:ir.model.fields,field_description:stock_mgmt.field_purchase_order_line__pairs_total
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.report_saleorder_document_custom
+msgid "Pairs total"
+msgstr "Paia totali"
+
+#. module: stock_mgmt
+#: code:addons/stock_mgmt/models/assortment.py:88
+#: code:addons/stock_mgmt/models/purchase.py:132
+#: code:addons/stock_mgmt/models/sale.py:94
+#, python-format
+msgid "Per usare questa funzione e' necessario selezionare un prodotto singolo"
+msgstr "Per usare questa funzione e' necessario selezionare un item singolo"
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.delivery_data_custom
+msgid "Pick up time"
+msgstr "Ora ritiro"
+
+#. module: stock_mgmt
+#: model:ir.ui.menu,name:stock_mgmt.assortimenti_menu_product_pricelist_main
+msgid "Pricelists"
+msgstr "Listini prezzi"
+
+#. module: stock_mgmt
+#: model:ir.model,name:stock_mgmt.model_product_product
+#: model:ir.model.fields,field_description:stock_mgmt.field_wizard_assortment__product_id
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.product_product_stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.product_template_stock_mgmt
+msgid "Item"
+msgstr "Item"
+
+#. module: stock_mgmt
+#: model:ir.model,name:stock_mgmt.model_product_template
+msgid "Item Template"
+msgstr "Item template"
+
+#. module: stock_mgmt
+#: model:ir.ui.menu,name:stock_mgmt.assortimenti_menu_products
+msgid "Item Variants"
+msgstr "Varianti item"
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.report_saleorder_document_custom
+msgid "Product image"
+msgstr "Immagine"
+
+#. module: stock_mgmt
+#: model:ir.ui.menu,name:stock_mgmt.assortimenti_menu
+#: model:ir.ui.menu,name:stock_mgmt.assortimenti_menu_child
+msgid "Products"
+msgstr "Articoli"
+
+#. module: stock_mgmt
+#: model:ir.model,name:stock_mgmt.model_purchase_order
+msgid "Purchase Order"
+msgstr "Ordine di acquisto"
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.report_purchaseorder_document_custom
+msgid "Purchase Order #"
+msgstr "Ordine di acquisto n."
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.report_purchaseorder_document_custom
+msgid "Purchase Order Confirmation #"
+msgstr "Conferma ordine di acquio_stat_valueo_stat_valuesto n."
+
+#. module: stock_mgmt
+#: model:ir.model,name:stock_mgmt.model_purchase_order_line
+msgid "Purchase Order Line"
+msgstr "Riga ordine di acquisto"
+
+#. module: stock_mgmt
+#: model:ir.model.fields,field_description:stock_mgmt.field_product_assortment_line__qty
+msgid "Qty"
+msgstr "Q.tà"
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.product_product_stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.product_template_stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.report_saleorder_document_custom
+msgid "Quantity"
+msgstr "Quantità"
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.report_saleorder_document_custom
+msgid "Quotation #"
+msgstr "Quotazione n."
+
+#. module: stock_mgmt
+#: model:ir.actions.report,name:stock_mgmt.action_report_saleorder_custom
+msgid "Quotation / Order Custom"
+msgstr "Quotazione / Ordine cliente"
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.delivery_data_custom
+msgid "Recipient's Signature"
+msgstr "Firma del destinatario"
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.report_purchaseorder_document_custom
+msgid "Request for Quotation #"
+msgstr "Richiesta di quotazione n."
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.stock_move_custom_tree
+msgid "Reserved"
+msgstr "Riservato"
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.view_company_form_stock_mgmt
+msgid "Reset db products (For test only)"
+msgstr ""
+
+#. module: stock_mgmt
+#: model:ir.model,name:stock_mgmt.model_sale_order
+msgid "Sale Order"
+msgstr "Ordine di vendita"
+
+#. module: stock_mgmt
+#: model:ir.model,name:stock_mgmt.model_sale_order_line
+msgid "Sales Order Line"
+msgstr "Riga ordine di vendita"
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.delivery_data_custom
+msgid "Shipping date"
+msgstr "Data di spedizione"
+
+#. module: stock_mgmt
+#: model:ir.model.fields,field_description:stock_mgmt.field_product_assortment_line__size_id
+#: model:ir.model.fields,field_description:stock_mgmt.field_product_product__size_id
+#: model:ir.model.fields,field_description:stock_mgmt.field_product_sizes__name
+#: model:ir.model.fields,field_description:stock_mgmt.field_product_template__size_id
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.delivery_data_custom
+msgid "Size"
+msgstr "Taglia"
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.product_product_stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.product_template_stock_mgmt
+msgid "Size composition"
+msgstr "Composizione taglie"
+
+#. module: stock_mgmt
+#: model:ir.model.fields,field_description:stock_mgmt.field_product_sizes__size
+msgid "Size no."
+msgstr "Taglia n."
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.wizard_assortment_form
+msgid "Start range"
+msgstr "Da taglia"
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.report_ddt_custom
+msgid "TD number:"
+msgstr "Numero DDT:"
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.report_purchaseorder_document_custom
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.report_saleorder_document_custom
+msgid "Taxes"
+msgstr "Imposte"
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.view_order_form_inherit_purchase_stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.view_order_form_inherit_sale_stock_mgmt
+msgid "Size from:"
+msgstr "Taglie da:"
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.view_order_form_inherit_purchase_stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.view_order_form_inherit_sale_stock_mgmt
+msgid "Size to:"
+msgstr "A taglia:"
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.report_ddt_custom
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.report_saleorder_document_custom
+msgid "To size"
+msgstr "A taglia"
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.report_saleorder_document_custom
+msgid "Total Price"
+msgstr "Prezzo totale"
+
+#. module: stock_mgmt
+#: model:ir.model.fields,field_description:stock_mgmt.field_purchase_order__packs_total
+#: model:ir.model.fields,field_description:stock_mgmt.field_sale_order__packs_total
+msgid "Total packs"
+msgstr "Tot. colli"
+
+#. module: stock_mgmt
+#: model:ir.model.fields,field_description:stock_mgmt.field_purchase_order__pairs_total
+#: model:ir.model.fields,field_description:stock_mgmt.field_sale_order__pairs_total
+msgid "Total pairs"
+msgstr "Tot. paia"
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.delivery_data_custom
+msgid "Transportation Method"
+msgstr "Metodo di trasporto"
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.delivery_data_custom
+msgid "Transportation Reason"
+msgstr "Causale di trasporto"
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.view_order_form_inherit_purchase_stock_mgmt
+msgid "U.M."
+msgstr ""
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.report_saleorder_document_custom
+msgid "Unit Price"
+msgstr "Prezzo unitario"
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.stock_move_custom_tree
+msgid "Unit of Measure"
+msgstr "Unità di misura"
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.report_ddt_custom
+msgid "VAT number:"
+msgstr "Partita IVA:"
+
+#. module: stock_mgmt
+#: model:ir.model.fields,field_description:stock_mgmt.field_product_externalcodes__partner_id
+msgid "Vendor"
+msgstr "Fornitore"
+
+#. module: stock_mgmt
+#: model:ir.model.fields,help:stock_mgmt.field_product_externalcodes__partner_id
+msgid "You can find a vendor by its Name, TIN, Email or Internal Reference."
+msgstr "È possibile trovare un fornitore per nome, codice fiscale, e-mail o riferimento interno."
+
+#. module: stock_mgmt
+#: code:addons/stock_mgmt/models/assortment.py:138
+#: code:addons/stock_mgmt/models/purchase.py:184
+#: code:addons/stock_mgmt/models/sale.py:146
+#, python-format
+msgid "You have to create attribute named: Size"
+msgstr "Devi prima avere creato un attributo: Taglia"
+
+#. module: stock_mgmt
+#: code:addons/stock_mgmt/models/sale.py:250
+#: code:addons/stock_mgmt/models/sale.py:267
+#, python-format
+msgid "You plan to sell %s %s of %s but you only have %s %s available in %s warehouse."
+msgstr "Stai cercando di vendere %s %s di %s ma solo %s item sono disponibili in %s"
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.product_product_stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.product_template_stock_mgmt
+msgid "assortment_id"
+msgstr "ID Assortimento"
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.products_confirmation_form
+msgid "confirm receipt of products"
+msgstr "conferma ricezione prodotti"
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.orders_line_stock_picking_package_preparation_form_ddt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.product_product_stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.product_template_stock_mgmt
+msgid "name"
+msgstr "nome"
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.wizard_assortment_form
+msgid "or"
+msgstr "o"
+
+#. module: stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.product_product_stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.product_template_stock_mgmt
+msgid "partner"
+msgstr ""
+
+#. module: stock_mgmt
+#: model:ir.model,name:stock_mgmt.model_product_assortment
+msgid "product.assortment"
+msgstr ""
+
+#. module: stock_mgmt
+#: model:ir.model,name:stock_mgmt.model_product_assortment_line
+msgid "product.assortment.line"
+msgstr ""
+
+#. module: stock_mgmt
+#: model:ir.model,name:stock_mgmt.model_product_collection
+msgid "product.collection"
+msgstr ""
+
+#. module: stock_mgmt
+#: model:ir.model,name:stock_mgmt.model_product_composition
+msgid "product.composition"
+msgstr ""
+
+#. module: stock_mgmt
+#: model:ir.model,name:stock_mgmt.model_product_external
+msgid "product.external"
+msgstr ""
+
+#. module: stock_mgmt
+#: model:ir.model,name:stock_mgmt.model_product_externalcodes
+msgid "product.externalcodes"
+msgstr ""
+
+#. module: stock_mgmt
+#: model:ir.model,name:stock_mgmt.model_product_manifacturing
+msgid "product.manifacturing"
+msgstr ""
+
+#. module: stock_mgmt
+#: model:ir.model,name:stock_mgmt.model_product_material
+msgid "product.material"
+msgstr ""
+
+#. module: stock_mgmt
+#: model:ir.model,name:stock_mgmt.model_product_sizes
+msgid "product.sizes"
+msgstr ""
+
+#. module: stock_mgmt
+#: model:ir.model,name:stock_mgmt.model_product_wizard
+msgid "product.wizard"
+msgstr ""
+
+#. module: stock_mgmt
+#: model:ir.model.fields,field_description:stock_mgmt.field_purchase_order_line__range_dist
+#: model:ir.model.fields,field_description:stock_mgmt.field_sale_order_line__range_dist
+msgid "range_dist"
+msgstr "Dist. taglie"
+
+#. module: stock_mgmt
+#: model:ir.model.fields,field_description:stock_mgmt.field_product_product__range_end
+#: model:ir.model.fields,field_description:stock_mgmt.field_product_template__range_end
+#: model:ir.model.fields,field_description:stock_mgmt.field_purchase_order_line__range_end
+#: model:ir.model.fields,field_description:stock_mgmt.field_sale_order_line__range_end
+#: model:ir.model.fields,field_description:stock_mgmt.field_wizard_assortment__range_end
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.product_product_stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.product_template_stock_mgmt
+msgid "range_end"
+msgstr "A taglia"
+
+#. module: stock_mgmt
+#: model:ir.model.fields,field_description:stock_mgmt.field_product_product__range_start
+#: model:ir.model.fields,field_description:stock_mgmt.field_product_template__range_start
+#: model:ir.model.fields,field_description:stock_mgmt.field_purchase_order_line__range_start
+#: model:ir.model.fields,field_description:stock_mgmt.field_sale_order_line__range_start
+#: model:ir.model.fields,field_description:stock_mgmt.field_wizard_assortment__range_start
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.product_product_stock_mgmt
+#: model_terms:ir.ui.view,arch_db:stock_mgmt.product_template_stock_mgmt
+msgid "range_start"
+msgstr "Da taglia"
+
+#. module: stock_mgmt
+#: model:ir.model,name:stock_mgmt.model_wizard_assortment
+msgid "wizard.assortment"
+msgstr ""
+
+#. module: stock_mgmt
+#: model:ir.model,name:stock_mgmt.model_wizard_assortment
+msgid "Product Category"
+msgstr "Stagione"

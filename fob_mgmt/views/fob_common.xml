@@ -1,0 +1,523 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+   <data noupdate="1">
+        <!-- Sequences for sale.order -->
+        <record id="seq_fob_order" model="ir.sequence">
+            <field name="name">FOB Sale Order</field>
+            <field name="code">fob.order</field>
+            <field name="prefix">PI/%(y)s</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- Sequences for sale.order -->
+        <record id="seq_fob_po_order" model="ir.sequence">
+            <field name="name">FOB Purchase Order</field>
+            <field name="code">fob.po.order</field>
+            <field name="prefix">PO/%(y)s</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+               <!-- Sequences for sale.order -->
+        <record id="seq_fob_order" model="ir.sequence">
+            <field name="name">FOB Sale Order</field>
+            <field name="code">fob.order</field>
+            <field name="prefix">PI/%(y)s</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- Sequences for prefattura -->
+        <record id="seq_prefattura" model="ir.sequence">
+            <field name="name">Prefattura</field>
+            <field name="code">fob.account.invoice</field>
+            <field name="prefix">PREINV/%(y)s</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+    </data>
+
+    <!-- generazione ordini di acquisto da righe pi -->
+    <!-- azione di conferma to batch  cwd-->
+    <record id="confirm_fob_form" model="ir.ui.view">
+        <field name="name">fob.order.line.confirm.form</field>
+        <field name="model">fob.order.line.confirm</field>
+        <field name="arch" type="xml">
+            <form string="Crea documenti correlati">
+<!--                <group>-->
+<!--                <field name="use_shortage"/>-->
+<!--                </group>-->
+                  <p class="oe_view_nocontent_create">
+                    Da questo wizard è possibile generare gli ordini di acquisto o le fatture per le righe selezionate
+                  </p>
+                    <group>
+                        <group>
+                            <field name="supplier_id"/>
+                            <button name="create_po_from_fob" type="object" string="Genera ordini d'acquisto" class="btn-primary"/>
+                        </group>
+                        <group>
+                            <field name="journal_id"/>
+                            <button name="create_inv_from_fob_order_line" type="object" string="Genera fatture" class="btn-primary"/>
+                        </group>
+                    </group>
+                <footer>
+                    <button string="Cancel" class="btn-default" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!--  add picking to batch action -->
+    <record id="fob_request_action" model="ir.actions.act_window">
+        <field name="name">Genera ordini o fatture da PI</field>
+        <field name="res_model">fob.order.line.confirm</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="confirm_fob_form"/>
+        <field name="target">new</field>
+    </record>
+
+        <act_window name="Genera ordini d'acquisto o fatture da PI"
+            res_model="fob.order.line.confirm"
+            src_model="fob.order.line"
+            view_mode="form"
+            target="new"
+            key2="client_action_multi"
+            id="act_fob_confirm"
+            multi="True"/>
+
+    <!-- generazione fatture da righe pi -->
+        <!-- azione di conferma to batch  cwd-->
+<!--    <record id="confirm_fob_invoice_form" model="ir.ui.view">-->
+<!--        <field name="name">fob.order.line.confirm.invoice.form</field>-->
+<!--        <field name="model">fob.order.line.confirm</field>-->
+<!--        <field name="arch" type="xml">-->
+<!--            <form string="Selezionare il registro fatture">-->
+<!--                <group>-->
+<!--                <field name="journal_id"/>-->
+<!--                </group>-->
+<!--                  <p class="oe_view_nocontent_create">-->
+<!--                    Generare le fatture di vendita per le righe selezionate ?-->
+<!--                  </p>-->
+<!--                <footer>-->
+<!--                    <button name="create_inv_from_fob_order_line" type="object" string="Genera fatture FOB" class="btn-primary"/>-->
+<!--                    <button string="Cancel" class="btn-default" special="cancel"/>-->
+<!--                </footer>-->
+<!--            </form>-->
+<!--        </field>-->
+<!--    </record>-->
+
+<!--    &lt;!&ndash;  add picking to batch action &ndash;&gt;-->
+<!--    <record id="fob_inv_request_action" model="ir.actions.act_window">-->
+<!--        <field name="name">Genera ordini da FOB</field>-->
+<!--        <field name="res_model">fob.order.line.confirm</field>-->
+<!--        <field name="view_type">form</field>-->
+<!--        <field name="view_mode">form</field>-->
+<!--        <field name="view_id" ref="confirm_fob_invoice_form"/>-->
+<!--        <field name="target">new</field>-->
+<!--    </record>-->
+
+<!--        <act_window name="Genera fatture da FOB"-->
+<!--            res_model="fob.order.line.confirm"-->
+<!--            src_model="fob.order.line"-->
+<!--            view_mode="form"-->
+<!--            target="new"-->
+<!--            key2="client_action_multi"-->
+<!--            id="act_fob_inv_confirm"-->
+<!--            multi="True"/>-->
+
+
+<!-- Se vogliamo fare un wizard unico
+    <menuitem id="generazione_fatture_per_data" name="Generazione fatture Clienti e prefatture Fornitori" action="gat_request_action" sequence="70" parent="Ritiro_id"/> -->
+
+<!--   <menuitem
+    action="action_gat_richieste"
+    id="menu_gat_richieste"
+    parent="stock.menu_stock_warehouse_mgmt" sequence="10"/> -->
+
+    <menuitem icon="fa-truck" id="menu_fob_mgmt" name="FOB" sequence="11" web_icon="fob_mgmt,static/description/shoe.png"/>
+<!--        <record id="fob_tree_view" model="ir.ui.view">-->
+<!--            <field name="name">fob.tree</field>-->
+<!--            <field name="model">product.product</field>-->
+<!--            <field eval="7" name="priority"/>-->
+<!--            <field name="arch" type="xml">-->
+<!--                <tree string="Product Variants">-->
+<!--                    <field name="default_code"/>-->
+<!--                    <field name="name"/>-->
+<!--                    <field name="lst_price"/>-->
+<!--                    <field name="standard_price"/>-->
+<!--                    <field name="type" invisible="1"/>-->
+<!--                    <field name="price" invisible="not context.get('pricelist',False)"/>-->
+<!--                    <field name="uom_id" options="{'no_open': True, 'no_create': True}" groups="uom.group_uom"/>-->
+<!--                    <field name="barcode"/>-->
+<!--                    <field name="product_tmpl_id" invisible="1"/>-->
+<!--                    <field name="active" invisible="1"/>-->
+<!--                </tree>-->
+<!--            </field>-->
+<!--        </record>-->
+
+<!--        <record id="fob_custom_search_form_view" model="ir.ui.view">
+            <field name="name">fob.search</field>
+            <field name="model">fob.order</field>
+            <field name="arch" type="xml">
+                <search string="Product">
+                    <field name="name" string="Product" filter_domain="['|', '|', ('product_variant_ids.default_code', 'ilike', self),('name', 'ilike', self), ('barcode', 'ilike', self)]"/>
+                    <field name="categ_id" filter_domain="[('categ_id', 'child_of', raw_value)]"/>
+                    <group expand="1" string="Group By">
+                        <filter string="Product Category" name="Category" context="{'group_by':'categ_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>-->
+
+    <record id="fob_custom_action_sale_order" model="ir.actions.act_window">
+        <field name="name">FOB Orders</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">fob.order</field>
+        <field name="view_mode">tree,form,calendar</field>
+        <field name="view_type">form</field>
+        <field name="view_id" ref="fob_view_order_tree"/>
+        <field name="help" type="html">
+          <p class="o_view_nocontent_smiling_face">
+            Create a new fob order
+          </p>
+        </field>
+    </record>
+
+    <record id="fob_custom_action_po_order" model="ir.actions.act_window">
+        <field name="name">FOB PO Orders</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">fob.po.order</field>
+        <field name="view_mode">tree,form,calendar</field>
+        <field name="view_type">form</field>
+<!--        <field name="context">{'search_default_filter_to_sell':1,'search_default_Category':1}</field>-->
+        <field name="view_id" ref="fob_purchase_order_tree"/>
+<!--        <field name="search_view_id" ref="fob_custom_search_form_view"/>-->
+        <field name="help" type="html">
+          <p class="o_view_nocontent_smiling_face">
+            Create a new fob purchase order
+          </p>
+        </field>
+    </record>
+
+    <menuitem id="fob_menu" name="Fob orders" action="fob_custom_action_sale_order" sequence="20" parent="menu_fob_mgmt"/>
+    <menuitem id="fob_menu_sale" name="Sale" action="fob_custom_action_sale_order" sequence="10" parent="fob_menu"/>
+    <menuitem id="fob_menu_po" name="Purchase" action="fob_custom_action_po_order" sequence="30" parent="fob_menu"/>
+    <menuitem id="fob_config_menu" name="Configurazioni" sequence="30" parent="menu_fob_mgmt"/>
+
+    <!-- FOB Management -->
+    <record id="fob_mgmt_tree" model="ir.ui.view">
+        <field name="name">fob.mgmt.tree</field>
+        <field name="model">fob.order.line</field>
+        <field name="arch" type="xml">
+          <tree string="Fob management" editable="top">
+                <field name="sequence" widget="handle" />
+                <field name="order_name" />
+                <field name="order_partner_id" />
+                <field name="client_order_ref" />
+                <field name="supplier_id" />
+                <field name="po_name" />
+                <field name="invoice_status" invisible="1"/>
+                <field name="inv_name" invisible="1"/>
+                <!-- We do not display the type because we don't want the user to be bothered with that information if he has no section or note. -->
+                <field name="display_type" invisible="1"/>
+                <field name="product_updatable" invisible="1"/>
+                <field name="product_id" invisible="1"/>
+                <field name="product_custom_attribute_value_ids" invisible="1" />
+                <field name="product_no_variant_attribute_value_ids" invisible="1" />
+                <field name="name" widget="section_and_note_text"/>
+                <field name="product_uom_qty" />
+                <field name="external_code" string="Cust.code"/>
+                <field name="assortment_id" invisible="0" string="Assortment" placeholder="Es.: 1-1-2-2-2-2"/>
+                <field name="range_start" invisible="1" string="Tg da:" />
+                <field name="range_end" invisible="1" string="Tg. a:"/>
+                <field name="pairs_size" invisible="1"/>
+                <field name="pairs_in_pack" />
+                <field name="pairs_total" />
+                <field name="qty_delivered" />
+                <field name="qty_delivered_manual" invisible="1"/>
+                <field name="qty_delivered_method" invisible="1"/>
+                <field name="shipping_state"/>
+                <field name="unshipped_qty" />
+                <field name="shortage_qty" />
+                <field name="loading_port_id"/>
+                <field name="etd_date"/>
+                <field name="lcno"/>
+                <field name="qty_invoiced" />
+                <field name="qty_to_invoice" invisible="1"/>
+                <field name="product_uom" />
+                <field
+                    name="analytic_tag_ids"
+                    groups="analytic.group_analytic_tags"
+                    widget="many2many_tags"
+                    options="{'color_field': 'color'}"
+                    invisible="1"
+                />
+                <field
+                    name="price_unit"
+                    attrs="{'readonly': [('qty_invoiced', '&gt;', 0)]}"
+                />
+                <field
+                    name="tax_id"
+                    widget="many2many_tags"
+                    options="{'no_create': True}"
+                    domain="[('type_tax_use','=','sale'),('company_id','=',parent.company_id)]"
+                    attrs="{'readonly': [('qty_invoiced', '&gt;', 0)]}"
+                    invisible="1"
+                />
+                <field name="discount" groups="sale.group_discount_per_so_line"/>
+                <field name="price_subtotal" widget="monetary" groups="account.group_show_line_subtotals_tax_excluded"/>
+                <field name="price_total" widget="monetary" groups="account.group_show_line_subtotals_tax_included"/>
+                <field name="state" invisible="1"/>
+                <field name="invoice_status" invisible="1"/>
+                <field name="customer_lead" invisible="1"/>
+                <field name="currency_id" invisible="1"/>
+                <field name="price_tax" invisible="1"/>
+                <field name="po_id" invisible="1"/>
+                <field name="invoice_id" invisible="1"/>
+                <button name="open_pi" string="PI" class="btn btn-default btn-primary" type="object" />
+                <button name="open_po" string="PO" class="btn btn-default btn-primary" type="object" attrs="{'invisible': [('po_id', '=', False)]}"/>
+                <button name="open_invoice" string="INV" class="btn btn-default btn-primary" type="object" attrs="{'invisible': [('invoice_id', '=', False)]}"/>
+          </tree>
+        </field>
+    </record>
+
+    <record id="fob_mgmt_search_view" model="ir.ui.view">
+            <field name="name">fob.search</field>
+            <field name="model">fob.order.line</field>
+            <field name="arch" type="xml">
+                <search string="Product">
+                    <field name="order_partner_id" />
+                    <field name="supplier_id" />
+                    <filter string="Da assegnare" domain="[('po_state','=','new')]" name="po_state_to_assign_orders_filter"/>
+                    <filter string="Assegnati" domain="[('po_state','=','assigned')]" name="po_state_assigned_orders_filter"/>
+                    <group expand="1" string="Group By">
+                        <filter string="Stato" name="Category" context="{'group_by':'po_state'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+    <record id="fob_mgmt_action" model="ir.actions.act_window">
+        <field name="name">Gestione ordini FOB</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">fob.order.line</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_type">form</field>
+        <field name="view_id" ref="fob_mgmt_tree"/>
+        <field name="search_view_id" ref="fob_mgmt_search_view"/>
+    </record>
+
+    <menuitem id="fob_mgmt_menu" action="fob_mgmt_action" parent="fob_menu" sequence="20" active="True"/>
+
+    <!-- FOB Management PREINV-->
+    <record id="preinv_mgmt_tree" model="ir.ui.view">
+        <field name="name">preinv.mgmt.tree</field>
+        <field name="model">account.invoice</field>
+        <field name="arch" type="xml">
+            <tree string="Preinvoice">
+                <field name="partner_id" string="Customer"/>
+                <field name="proforma_number" string="Customer"/>
+                <field name="date_invoice"/>
+                <field name="number"/>
+                <field name="commercial_partner_id" invisible="1"/>
+                <field name="reference" invisible="1"/>
+                <field name="name" invisible="1"/>
+                <field name="journal_id" invisible="1"/>
+                <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
+                <field name="user_id"/>
+                <field name="date_due"/>
+                <field name="origin"/>
+                <field name="amount_untaxed_invoice_signed" string="Tax Excluded" sum="Total"/>
+                <field name="amount_tax_signed" string="Tax" sum="Total"/>
+                <field name="amount_total_signed" string="Total" sum="Total"/>
+                <field name="residual_signed" string="Amount Due" sum="Amount Due"/>
+                <field name="state" invisible="1"/>
+             </tree>
+        </field>
+    </record>
+
+    <record id="preinv_mgmt_search_view" model="ir.ui.view">
+            <field name="name">preinv.fob.search</field>
+            <field name="model">account.invoice</field>
+            <field name="arch" type="xml">
+                <search string="Preinv">
+                    <field name="partner_id" />
+                    <filter string="Prefatture" domain="[('proforma_number','>', 0)]" name="is_preinv"/>
+                    <group expand="1" string="Group By">
+                        <filter string="state" name="Category" context="{'group_by':'state'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+    <record id="preinv_mgmt_action" model="ir.actions.act_window">
+        <field name="name">Preinvoices</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">account.invoice</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_type">form</field>
+        <field name="view_id" ref="preinv_mgmt_tree"/>
+        <field name="domain">[('proforma_number','>','0')]</field>
+        <field name="search_view_id" ref="preinv_mgmt_search_view"/>
+    </record>
+
+    <record id="action_preinvoice_tree2" model="ir.actions.act_window.view">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="preinv_mgmt_tree"/>
+            <field name="act_window_id" ref="preinv_mgmt_action"/>
+    </record>
+
+    <record id="action_preinvoice_view2" model="ir.actions.act_window.view">
+            <field eval="2" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="account.invoice_form"/>
+            <field name="act_window_id" ref="preinv_mgmt_action"/>
+    </record>
+
+    <menuitem id="preinv_mgmt_menu" action="preinv_mgmt_action" parent="fob_menu" sequence="30" active="True"/>
+
+    <!-- Seasons -->
+    <record id="fob_season_tree" model="ir.ui.view">
+        <field name="name">fob.season.tree</field>
+        <field name="model">fob.season</field>
+        <field name="arch" type="xml">
+          <tree string="Stagione" editable="top">
+            <field name="name"/>
+          </tree>
+        </field>
+    </record>
+
+    <record id="fob_season_action" model="ir.actions.act_window">
+        <field name="name">Stagioni</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">fob.season</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_type">form</field>
+        <field name="view_id" ref="fob_season_tree"/>
+    </record>
+
+    <menuitem id="fob_season_menu" action="fob_season_action" parent="fob_config_menu" sequence="10" active="True"/>
+
+    <!-- Harbour -->
+    <record id="fob_harbour_tree" model="ir.ui.view">
+        <field name="name">fob.harbour.tree</field>
+        <field name="model">fob.harbour</field>
+        <field name="arch" type="xml">
+          <tree string="Porti" editable="top">
+            <field name="name"/>
+          </tree>
+        </field>
+    </record>
+
+    <record id="fob_harbour_action" model="ir.actions.act_window">
+        <field name="name">Porti</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">fob.harbour</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_type">form</field>
+        <field name="view_id" ref="fob_harbour_tree"/>
+    </record>
+
+    <menuitem id="fob_harbour_menu" action="fob_harbour_action" parent="fob_config_menu" sequence="20" active="True"/>
+
+        <!-- Incoterms -->
+    <record id="fob_incoterms_tree" model="ir.ui.view">
+        <field name="name">fob.incoterms.tree</field>
+        <field name="model">fob.incoterms</field>
+        <field name="arch" type="xml">
+          <tree string="Incoterms" editable="top">
+            <field name="name"/>
+          </tree>
+        </field>
+    </record>
+
+    <record id="fob_incoterms_action" model="ir.actions.act_window">
+        <field name="name">Incoterms</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">fob.incoterms</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_type">form</field>
+        <field name="view_id" ref="fob_incoterms_tree"/>
+    </record>
+
+    <menuitem id="fob_incoterms_menu" action="fob_incoterms_action" parent="fob_config_menu" sequence="30" active="True"/>
+
+    <!-- Wizard generazione fatture da ordini di acquisto-->
+<!--    <record id="confirm_fob_po_form" model="ir.ui.view">-->
+<!--        <field name="name">fob.po.order.confirm.form</field>-->
+<!--        <field name="model">fob.po.order.confirm</field>-->
+<!--        <field name="arch" type="xml">-->
+<!--            <form string="Crea fatture da ordini">-->
+<!--                  <p class="oe_view_nocontent_create">-->
+<!--                    Generare le fatture di vendita dagli ordini di acquisto FOB selezionati ?-->
+<!--                  </p>-->
+<!--                <field name="journal_id"/>-->
+<!--                <footer>-->
+<!--                    <button name="create_invoice_from_po" type="object" string="Genera fatture" class="btn-primary"/>-->
+<!--                    <button string="Cancel" class="btn-default" special="cancel"/>-->
+<!--                </footer>-->
+<!--            </form>-->
+<!--        </field>-->
+<!--    </record>-->
+
+    <!-- Wizard generazione fatture da ordini di acquisto(PO)-->
+    <!--  add picking to batch action -->
+<!--    <record id="fob_po_request_action" model="ir.actions.act_window">-->
+<!--        <field name="name">Genera fatture da FOB</field>-->
+<!--        <field name="res_model">fob.po.order.confirm</field>-->
+<!--        <field name="view_type">form</field>-->
+<!--        <field name="view_mode">form</field>-->
+<!--        <field name="view_id" ref="confirm_fob_po_form"/>-->
+<!--        <field name="target">new</field>-->
+<!--    </record>-->
+
+<!--        <act_window name="Genera fatture da FOB"-->
+<!--            res_model="fob.po.order.confirm"-->
+<!--            src_model="fob.po.order"-->
+<!--            view_mode="form"-->
+<!--            target="new"-->
+<!--            key2="client_action_multi"-->
+<!--            id="act_fob_po_confirm"-->
+<!--            multi="True"/>-->
+
+    <!-- Wizard generazione fatture da ordini di vendita(PI)-->
+<!--    <record id="confirm_fob_pi_form" model="ir.ui.view">-->
+<!--        <field name="name">fob.order.confirm.form</field>-->
+<!--        <field name="model">fob.order.confirm</field>-->
+<!--        <field name="arch" type="xml">-->
+<!--            <form string="Crea fatture da ordini">-->
+<!--                  <p class="oe_view_nocontent_create">-->
+<!--                    Generare le fatture di vendita dagli ordini di vendita(PI) selezionati ?-->
+<!--                  </p>-->
+<!--                    <field name="journal_id"/>-->
+<!--                <footer>-->
+<!--                    <button name="create_invoice_from_pi" type="object" string="Genera fatture" class="btn-primary"/>-->
+<!--                    <button string="Cancel" class="btn-default" special="cancel"/>-->
+<!--                </footer>-->
+<!--            </form>-->
+<!--        </field>-->
+<!--    </record>-->
+
+    <!--  add picking to batch action -->
+<!--    <record id="fob_pi_request_action" model="ir.actions.act_window">-->
+<!--        <field name="name">Genera fatture da FOB</field>-->
+<!--        <field name="res_model">fob.order.confirm</field>-->
+<!--        <field name="view_type">form</field>-->
+<!--        <field name="view_mode">form</field>-->
+<!--        <field name="view_id" ref="confirm_fob_pi_form"/>-->
+<!--        <field name="target">new</field>-->
+<!--    </record>-->
+
+<!--        <act_window name="Genera fatture da FOB"-->
+<!--            res_model="fob.order.confirm"-->
+<!--            src_model="fob.order"-->
+<!--            view_mode="form"-->
+<!--            target="new"-->
+<!--            key2="client_action_multi"-->
+<!--            id="act_fob_pi_confirm"-->
+<!--            multi="True"/>-->
+</odoo>

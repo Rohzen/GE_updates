@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+<odoo>
+    <data>
+
+        <record id="view_order_form_inherit_sale_stock_mgmt" model="ir.ui.view">
+            <field name="name">sale.order.form.sale.mgmt</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                 <xpath expr="//field[@name='order_line']/tree" position="attributes">
+                    <attribute name="editable">bottom</attribute>
+                </xpath>
+                 <xpath expr="//page/field[@name='order_line']/tree//field[@name='product_id']" position="after">
+                    <field name="external_code" string="Ext.code"/>
+                </xpath>
+                
+                 <xpath expr="//page/field[@name='order_line']/tree/field[@name='name']" position="attributes">
+                    <!--<attribute name="invisible">1</attribute>-->
+                </xpath>
+                
+                 <xpath expr="//page/field[@name='order_line']/tree/field[@name='product_id']" position="attributes">
+                    <attribute name="domain">"[('is_base', '=', False)]"</attribute>
+                </xpath>
+
+                <xpath expr="//page/field[@name='order_line']/form//field[@name='product_uom_qty']" position="after">
+                    <group>
+                        <field name="assortment_id" invisible="0" string="Assortment" placeholder="Es.: 1-1-2-2-2-2"/>
+                        <!-- <field name="range_dist" invisible="0" string="Distribuzione tg." placeholder="Es.: 1-1-2-2-2-2"/> -->
+                        <field name="range_start" invisible="0" string="Tg da:"/>
+                        <field name="range_end" invisible="0" string="Tg. a:"/>
+                    </group>
+                </xpath>
+                <xpath expr="//page/field[@name='order_line']/tree/field[@name='product_uom_qty']" position="after">
+                    <field name="range_start" invisible="0" string="Tg da:"/>
+                    <field name="range_end" invisible="0" string="Tg. a:"/>
+                    <field name="assortment_id" invisible="0" string="Assortment" placeholder="Es.: 1-1-2-2-2-2"/>
+                    <!-- <button name="create_sset" string="+" type="object" class="oe_highlight" confirm="Create a new set ?"/> -->
+                </xpath>
+
+                 <xpath expr="//page/field[@name='order_line']/form//field[@name='product_uom']" position="after">
+                    <group>
+                        <field name="pairs_size" />
+                        <field name="pairs_in_pack" />
+                        <field name="pairs_total" />
+                    </group>
+                </xpath>
+                 <xpath expr="//page/field[@name='order_line']/tree//field[@name='product_uom']" position="after">
+                    <field name="pairs_size" />
+                    <field name="pairs_in_pack" />
+                    <field name="pairs_total" />
+                </xpath>
+
+                 <xpath expr="//field[@name='amount_total']" position="after">
+                    <field name="packs_total"/>
+                    <field name="pairs_total"/>
+                </xpath>
+                <xpath expr="//field[@name='payment_term_id']" position="after">
+                    <field name="discount"/>
+                    <button name="set_rows" type="object" icon="/fob_mgmt/static/src/icons/upd_rows.png" class="btn-primary"/>
+                </xpath>
+
+           </field>
+        </record>
+    </data>
+</odoo>

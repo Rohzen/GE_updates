@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2018 Simone Rubino - Agile Business Group
+     License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl). -->
+<odoo>
+
+    <record id="paperformat_ddt" model="report.paperformat">
+        <field name="name">Purchase order</field>
+        <field name="default" eval="True"/>
+        <field name="format">A4</field>
+        <field name="page_height">0</field>
+        <field name="page_width">0</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">10</field>
+        <field name="margin_bottom">25</field>
+        <field name="margin_left">5</field>
+        <field name="margin_right">5</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">5</field>
+        <field name="dpi">80</field>
+    </record>
+
+        <template id="delivery_data_custom">
+
+            <style type="text/css">
+                table.delivery_data td h6 {
+                margin: 5px;
+                }
+                 .signature {
+                min-height: 0.1em;
+                }
+            </style>
+
+            <table class="table table-condensed table-bordered delivery_data" style="margin-top:5px">
+                <tr>
+                    <td>
+                        <span>Transportation Reason</span>
+                        <div class="signature" t-field="ddt.transportation_reason_id"></div>
+                    </td>
+                    <td>
+                        <span>Carriage Condition</span>
+                        <div t-field="ddt.carriage_condition_id"></div>
+                    </td>
+                    <td>
+                        <span>Transportation Method</span>
+                        <div t-field="ddt.transportation_method_id"></div>
+                    </td>
+                    <td>
+                        <span>Goods Description</span>
+                        <div class="signature" t-field="ddt.goods_description_id"></div>
+                    </td>
+                    <td>
+                        <span>Net Weight</span>
+                        <div class="signature"><span t-field="ddt.weight"/> <span t-field="ddt.weight_manual_uom_id"/></div>
+                    </td>
+                    <td>
+                        <span>Gross Weight</span>
+                        <div class="signature"><span t-field="ddt.gross_weight"/> <span t-field="ddt.gross_weight_uom_id"/></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <span>Carrier</span>
+                        <div class="signature" t-field="ddt.carrier_id.name"></div>
+                    </td>
+                    <td>
+                        <span>Shipping date</span>
+                        <div class="signature" t-field="ddt.date_done" t-options='{"widget": "date"}'></div>
+                    </td>
+                    <td>
+                        <span>Pick up time</span>
+                        <div class="signature"></div>
+                    </td>
+                    <td>
+                        <span>Packages</span>
+                        <div class="signature" t-field="o.packs_total"></div>
+                    </td>
+                    <td>
+                        <span>Volume</span>
+                        <div class="signature"><span t-field="ddt.volume"/> <span t-field="ddt.volume_uom_id"/></div>
+                    </td>
+                </tr>
+            </table>
+            <table class="table table-condensed table-bordered delivery_data">
+                <tr>
+                    <td>
+                        <span>Carrier's Signature</span>
+                        <div class="signature"></div>
+                    </td>
+                    <td>
+                        <span>Driver's Signature</span>
+                        <div class="signature"></div>
+                    </td>
+                    <td>
+                        <span>Recipient's Signature</span>
+                        <div class="signature"></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="3"><span>Notes</span>
+                        <div class="signature" t-field="ddt.note"></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="8">
+                        <span>CONAI contribution paid where due.</span>
+                    </td>
+                </tr>
+            </table>
+        </template>
+
+        <template id="report_ddt_custom">
+            <t t-call="web.external_layout">
+                <t t-set="o" t-value="o.with_context({'lang':o.partner_id.lang})" />
+                <div class="page" style="padding-top: 70px;">
+                    <div class="row">
+                        <div class="col-6">
+                            <h6>Shipment address:</h6>
+                            <div t-field="o.partner_shipping_id"
+                                t-options='{"widget": "contact", "fields": ["address", "name", "phone"], "no_marker": True, "phone_icons": True}' />
+                            <!--<div t-if="o.partner_shipping_id">VAT number: <span t-field="o.partner_shipping_id.vat"/></div>-->
+                        </div>
+                        <div class="col-6">
+                            <h6>Billing address:</h6>
+                            <div t-field="o.partner_id"
+                                t-options='{"widget": "contact", "fields": ["address", "name", "phone"], "no_marker": True, "phone_icons": True}' />
+                            <div t-if="o.partner_id">VAT number: <span t-field="o.partner_id.vat"/></div>
+                        </div>
+                    </div>
+                    <br/>
+                    <h6>TD number: <span t-field="o.ddt_number"></span> - <span t-field="o.date" t-options='{"widget": "date"}'></span></h6>
+                    <table class="table table-condensed">
+                        <t t-set="has_serial_number"
+                           t-value="o.line_ids.filtered('lot_ids')"
+                           groups="stock.group_production_lot"/>
+                        <thead>
+                            <tr>
+                                <!--<th><strong>Product image</strong></th>-->
+                                <th><strong>Ext code</strong></th>
+                                <th><strong>Description</strong></th>
+                                <th class="text-right"><strong>Qty</strong></th>
+                                <th class="text-left" groups="uom.group_uom"><strong>UoM</strong></th>
+                                <th class="text-left"><strong>Assort</strong></th>
+                                <!--<th class="text-right">From size</th>
+                                <th class="text-right">To size</th>-->
+                                <th class="text-right"><strong>Pairs per size</strong></th>
+                                <th class="text-right"><strong>Tot. pairs</strong></th>
+                                <th name="lot_serial" t-if="has_serial_number" class="text-right">
+                                    <strong>Lots/Serial Numbers</strong>
+                                </th>
+                                <t t-if="o.show_price">
+                                    <th class="text-right"><strong>Price</strong></th>
+                                    <th class="text-right"><strong>Discount</strong></th>
+                                </t>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="o.order_line_ids" t-as="line">
+                            <!-- <tr t-foreach="o.line_ids" t-as="line"> -->
+
+<!--                         <field name="product_uom_qty"/>
+                            <field name="product_uom"/>
+                            <field name="name" string="name"/>
+                            <field name="pairs_size" />
+                            <field name="pairs_size" /> -->
+                                <!--<td>
+                                    <img t-attf-src="data:image/*;base64,{{line.product_id.image}}" style="height:30px;width:80px"/></td>-->
+                                <td><span t-field="line.external_code"/></td>
+                                <td><span t-field="line.name"></span></td>
+                                <td class="text-right"><span t-field="line.product_uom_qty"></span></td>
+                                <td class="text-right"><span t-field="line.product_uom"></span></td>
+                                <td class="text-right"><span t-field="line.assortment_id.code"></span></td>
+                                <!--<td class="text-right"><span t-field="line.range_start"></span></td>
+                                <td class="text-right"><span t-field="line.range_end"></span></td>-->
+                                <td class="text-right"><span t-field="line.pairs_size"></span></td>
+                                <td class="text-right"><span t-field="line.pairs_total"></span></td>
+<!--                                 <td class="text-left" groups="uom.group_uom"><span t-field="line.product_uom_id"></span></td>
+                                <t t-if="has_serial_number">
+                                    <t t-set="lot_dict" t-value="line.quantity_by_lot()"/>
+                                    <td class="text-right">
+                                        <t t-foreach="lot_dict" t-as="lot">
+                                            <div>· <t t-esc="lot.name"/> <t t-if="lot_dict[lot]">(<t t-esc="lot_dict[lot]"/>)</t></div>
+                                        </t>
+                                    </td>
+                                </t>
+                                <t t-if="o.show_price">
+                                    <td class="text-right" id="line_price_unit"><span t-field="line.price_unit"></span></td>
+                                    <td class="text-right" id="line_discount"><span t-field="line.discount"></span></td>
+                                </t> -->
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div id="total" class="row justify-content-end">
+                        <div class="col-8">
+                            <table class="table table-sm">
+                                <tr class="border-black o_total">
+                                    <span>Transport Document Presidential Decree 14/08/96 N. 472 Art. 1 .c.3)</span>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-4">
+                            <table class="table table-sm">
+                                <tr class="border-black o_total">
+                                    <td><strong>Pairs total</strong></td>
+                                    <td class="text-right">
+                                        <span t-field="o.pairs_total"/>
+                                    </td>
+                                </tr>
+                                <tr class="border-black o_total">
+                                    <td><strong>Packs total</strong></td>
+                                    <td class="text-right">
+                                        <span t-field="o.packs_total"/>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+            </div>
+                    
+                    <t t-call="stock_mgmt.delivery_data_custom">
+                        <t t-set="ddt" t-value="o"/>
+                    </t>
+                </div>
+            </t>
+        </template>
+
+        <template id="report_ddt_main_custom">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <t t-call="stock_mgmt.report_ddt_custom" t-lang="o.partner_id.lang"/>
+                </t>
+            </t>
+        </template>
+
+        <report
+            string="DDT_CUSTOM"
+            id="action_report_ddt_custom"
+            model="stock.picking.package.preparation"
+            paperformat="stock_mgmt.paperformat_ddt"
+            report_type="qweb-pdf"
+            name="stock_mgmt.report_ddt_main_custom"
+            file="stock_mgmt.report_ddt_main_custom"/>
+
+</odoo>

@@ -37,6 +37,7 @@
                 <field name="loading_date" attrs="{'invisible': [('proforma_number','=',False)]}"/>
                 <field name="route" attrs="{'invisible': [('proforma_number','=',False)]}"/>
                 <field name="seal_no" attrs="{'invisible': [('proforma_number','=',False)]}"/>
+                <field name="discount"/>
             </xpath>
 
             <xpath expr="//field[@name='payment_term_id']" position="replace">

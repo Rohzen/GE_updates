@@ -38,6 +38,7 @@ class AccountInvoice(models.Model):
     no_claim_discount = fields.Float('No claim discount(%)')
     total_discount = fields.Float('Total discount')
     total_discount_value = fields.Float('Total discount(value)')
+    discount = fields.Float('Sconto(%)', copy=False)
     deposit_expected = fields.Monetary('Dep. expected')
     deposit_received = fields.Monetary('Dep. received')
     deposit_pending_balance = fields.Monetary('Dep.Pending balance')
@@ -53,6 +54,19 @@ class AccountInvoice(models.Model):
     total_value_price = fields.Monetary("Value price", compute='_compute_total_value_price')
 
     pi_order_id = fields.Many2one(comodel_name='fob.order', string='PI', readonly=True)
+
+    @api.onchange('payment_term_id', 'date_invoice')
+    def _onchange_payment_term_date_invoice(self):
+        date_invoice = self.date_invoice
+        if not date_invoice:
+            date_invoice = fields.Date.context_today(self)
+        if self.payment_term_id:
+            pterm = self.payment_term_id
+            pterm_list = pterm.with_context(currency_id=self.company_id.currency_id.id).compute(value=1, date_ref=date_invoice)[0]
+            if not self.date_due:
+                self.date_due = max(line[0] for line in pterm_list)
+        elif self.date_due and (date_invoice > self.date_due):
+            self.date_due = date_invoice
 
     @api.one
     def compute_account_dates(self, payment_term, value, date_ref):
@@ -170,7 +184,7 @@ class AccountInvoice(models.Model):
             self.pi_order_id.eta_date = self.eta_date
 
     def compute_accounts(self):
-        if self.payment_term_id and not self.order_accounts:
+        if self.payment_term_id and not self.invoice_accounts:
             payment_term_list = self.compute_account_dates(self.payment_term_id.id, self.total_discounted_amount, self.payment_start_date)
             accounts = payment_term_list[0][0]
             types = payment_term_list[0][1]
@@ -185,12 +199,13 @@ class AccountInvoice(models.Model):
                 else:
                     self.invoice_accounts.create({'order_id': self.id, 'date': data, 'deposit': amount})
 
+
     def set_rows(self):
         for row in self.invoice_line_ids:
             row.container_no = self.container_no
             row.tipo_container = self.tipo_container
             row.seal_no = self.seal_no
-            # row.discount = self.discount
+            row.discount = self.discount
             # row.product_brand_id = self.product_brand_id
             # row.client_order_ref = self.client_order_ref
 
@@ -227,6 +242,7 @@ class AccountInvoice(models.Model):
                 po_rows = self.env['fob.po.order.line'].search([('pi_id', '=', rows.pi_id.id)])
                 for po in po_rows:
                     po.write({'shipping_state': 'unshipped'})
+
 
 # class FobPOrderAccountsLine(models.Model):
 #     _name = 'account.invoice.accounts'
@@ -360,8 +376,8 @@ class AccountInvoiceLine(models.Model):
             price = price - (price * no_claim)
         taxes = False
         if self.invoice_line_tax_ids:
-            taxes = self.invoice_line_tax_ids.compute_all(price, currency, (self.quantity - self.shortage_qty), product=self.product_id, partner=self.invoice_id.partner_id)
-        self.price_subtotal = price_subtotal_signed = taxes['total_excluded'] if taxes else (self.quantity - self.shortage_qty) * price
+            taxes = self.invoice_line_tax_ids.compute_all(price, currency, (self.pairs_total - self.shortage_qty), product=self.product_id, partner=self.invoice_id.partner_id)
+        self.price_subtotal = price_subtotal_signed = taxes['total_excluded'] if taxes else (self.pairs_total - self.shortage_qty) * price
         self.price_total = taxes['total_included'] if taxes else self.price_subtotal
         if self.invoice_id.currency_id and self.invoice_id.currency_id != self.invoice_id.company_id.currency_id:
             currency = self.invoice_id.currency_id
@@ -376,7 +392,7 @@ class AccountInvoiceLine(models.Model):
         taxes = False
         if self.invoice_line_tax_ids:
             taxes = self.invoice_line_tax_ids.compute_all(price, currency, (self.quantity - self.shortage_qty), product=self.product_id, partner=self.invoice_id.partner_id)
-        price_subtotal = price_subtotal_signed = taxes['total_excluded'] if taxes else (self.quantity - self.shortage_qty) * price
+        price_subtotal = price_subtotal_signed = taxes['total_excluded'] if taxes else (self.pairs_total - self.shortage_qty) * price
         #self.price_total = taxes['total_included'] if taxes else self.price_subtotal
         # if self.invoice_id.currency_id and self.invoice_id.currency_id != self.invoice_id.company_id.currency_id:
         #     currency = self.invoice_id.currency_id
